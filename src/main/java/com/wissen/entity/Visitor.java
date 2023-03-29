@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 /**
@@ -26,21 +27,27 @@ public class Visitor {
     @Column(nullable = false, length = 75)
     private String id;
 
+    @NotBlank(message = "Name can not be blank.")
     @Column(nullable = false, length = 100)
     private String fullName;
 
+    @NotBlank(message = "Email can not be blank.")
     @Column(nullable = false, length = 150)
     private String email;
 
+    @NotBlank(message = "Phone number can not be blank.")
     @Column(nullable = false, length = 15)
     private String phoneNumber;
 
+    @NotBlank(message = "Point of contact can not be blank.")
     @Column(nullable = false, length = 100)
     private String pointOfContact;
 
+    @NotBlank(message = "Point of contact email can not be blank.")
     @Column(nullable = false, length = 150)
     private String pointOfContactEmail;
 
+    @NotBlank(message = "Location can not be blank.")
     @Column(nullable = false, length = 255)
     private String location;
 
@@ -53,6 +60,7 @@ public class Visitor {
     @Column(nullable = true, length = 50)
     private String idProofType;
 
+    @NotBlank(message = "Id proof number can not be blank.")
     @Column(nullable = false, length = 100)
     private String idProofNumber;
 
@@ -64,6 +72,7 @@ public class Visitor {
     @Column(nullable = true)
     private LocalDateTime outTime;
 
+    @NotBlank(message = "Visitor image can not be blank.")
     @Lob
     @Column(nullable = false, length = 700000)
     private byte[] visitorImage;

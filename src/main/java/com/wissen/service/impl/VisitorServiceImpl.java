@@ -1,18 +1,12 @@
 package com.wissen.service.impl;
 
-import com.wissen.dto.VisitorDto;
 import com.wissen.entity.Visitor;
 import com.wissen.repository.VisitorRepository;
 import com.wissen.service.VisitorService;
-import com.wissen.util.VisitorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * Implementation class for visitor service.
@@ -28,12 +22,11 @@ public class VisitorServiceImpl implements VisitorService {
     /**
      * Save visitor details.
      *
-     * @param visitorDto
+     * @param visitor
      * @return savedVisitor
      */
     @Override
-    public Visitor saveVisitorDetails(VisitorDto visitorDto) throws UnsupportedEncodingException {
-        Visitor visitor = VisitorUtils.getVisitorEntity(visitorDto);
+    public Visitor saveVisitorDetails(Visitor visitor) {
         return this.visitorRepository.save(visitor);
     }
 

@@ -15,10 +15,10 @@ public interface VisitorService {
     /**
      * Save visitor details.
      *
-     * @param visitorDto
+     * @param visitor
      * @return savedVisitor
      */
-    public Visitor saveVisitorDetails(VisitorDto visitorDto) throws UnsupportedEncodingException;
+    public Visitor saveVisitorDetails(Visitor visitor);
 
     /**
      * Method to update out time.

@@ -1,7 +1,6 @@
 package com.wissen.controller;
 
 import com.wissen.constants.Constants;
-import com.wissen.dto.VisitorDto;
 import com.wissen.entity.Visitor;
 import com.wissen.model.response.VisitorManagementResponse;
 import com.wissen.service.VisitorService;
@@ -35,10 +34,11 @@ public class VisitorController {
      */
     @PostMapping(consumes ={MediaType.APPLICATION_JSON_VALUE})
     @ApiOperation(value = "API to save visitor details", nickname = "getRefData")
-    public VisitorManagementResponse saveVisitorDetails(@RequestBody @Valid VisitorDto visitorDto) {
+    public VisitorManagementResponse saveVisitorDetails(@RequestBody @Valid Visitor visitor) {
         try {
-            Visitor visitor = this.visitorService.saveVisitorDetails(visitorDto);
-            return ResponseUtil.getResponse(ResponseUtil.getSavedVisitorSavedDetails(visitor));
+            log.info("Saving visitors details : {}", visitor);
+            Visitor savedData = this.visitorService.saveVisitorDetails(visitor);
+            return ResponseUtil.getResponse(savedData);
         }catch (Exception e) {
             log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
             return ResponseUtil.getResponse("Not able to save visitor details", "Visitor Details", e);
@@ -56,7 +56,7 @@ public class VisitorController {
     public VisitorManagementResponse logout(@RequestParam(required = true) String id) {
         try {
             Visitor visitor = this.visitorService.logOut(id);
-            return ResponseUtil.getResponse(ResponseUtil.getSavedVisitorSavedDetails(visitor));
+            return ResponseUtil.getResponse(visitor);
         }catch (Exception e) {
             log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
             return ResponseUtil.getResponse("Not able to update log out time.", "Logout time", e);
