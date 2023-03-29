@@ -29,7 +29,7 @@ public class VisitorController {
     /**
      * Saving visitor details.
      *
-     * @param visitorDto
+     * @param visitor
      * @return
      */
     @PostMapping(consumes ={MediaType.APPLICATION_JSON_VALUE})
@@ -55,6 +55,7 @@ public class VisitorController {
     @ApiOperation(value = "API to Update logout time", nickname = "logout")
     public VisitorManagementResponse logout(@RequestParam(required = true) String id) {
         try {
+            log.info("Updating logout time for id : {}", id);
             Visitor visitor = this.visitorService.logOut(id);
             return ResponseUtil.getResponse(visitor);
         }catch (Exception e) {
