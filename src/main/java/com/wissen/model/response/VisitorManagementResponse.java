@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * Model class for API response.
  *
@@ -20,5 +22,5 @@ public class VisitorManagementResponse {
 
     ResponseStatus responseStatus;
     Object responseData;
-    Error error;
+    List<Error> errors;
 }
