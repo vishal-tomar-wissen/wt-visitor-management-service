@@ -2,6 +2,7 @@ package com.wissen.controller;
 
 import com.wissen.constants.Constants;
 import com.wissen.dto.VisitorFilterDto;
+import com.wissen.dto.FilterRequest;
 import com.wissen.entity.Visitor;
 import com.wissen.model.response.VisitorManagementResponse;
 import com.wissen.service.VisitorService;
@@ -9,12 +10,10 @@ import com.wissen.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -86,4 +85,27 @@ public class VisitorController {
             return ResponseUtil.getResponse(e.getMessage(), "Visitors details", e);
         }
     }
+
+
+    /**
+     * Method to fetch values from the Visitor table
+     * Dynamic Query will be formed based on the request filter
+     * If the list is empty then all visitor data will be fetched
+     * Else will return only specific results
+     * @param requestFilters
+     * @return
+     */
+    @PostMapping("/fetch")
+    @ApiOperation(value = "API to get visitors details", nickname = "getVisitorsDetails")
+    public VisitorManagementResponse fetchVisitorsDetails(@RequestBody(required = false) List<FilterRequest> requestFilters) {
+        try {
+            log.info("Getting visitors details");
+            List<Visitor> visitors = this.visitorService.fetchVisitorsDetails(requestFilters);
+            return ResponseUtil.getResponse(visitors);
+        }catch (Exception e) {
+            log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
+            return ResponseUtil.getResponse(e.getMessage(), "Visitors details", e);
+        }
+    }
+
 }

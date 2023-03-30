@@ -1,7 +1,9 @@
 package com.wissen.service.impl;
 
 import com.wissen.constants.Constants;
+import com.wissen.dto.FilterRequest;
 import com.wissen.dto.VisitorFilterDto;
+import com.wissen.enrich.FilterSpecification;
 import com.wissen.entity.Visitor;
 import com.wissen.exceptions.VisitorManagementException;
 import com.wissen.repository.VisitorEntityManagerRepository;
@@ -10,11 +12,14 @@ import com.wissen.service.VisitorService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.core.util.UuidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+
 
 /**
  * Implementation class for visitor service.
@@ -30,6 +35,14 @@ public class VisitorServiceImpl implements VisitorService {
 
     @Autowired
     private VisitorEntityManagerRepository visitorEntityManagerRepository;
+
+    /**
+     * Filter Specification is used to enrich the input request
+     * This class will form dynamic queries
+     * No dao layer is been called in this class, just a transformer
+     */
+    @Autowired
+    FilterSpecification<Visitor> filterSpecification;
 
     /**
      * Save visitor details.
@@ -73,4 +86,24 @@ public class VisitorServiceImpl implements VisitorService {
             return this.visitorEntityManagerRepository.findVisitorDetailsByFilter(visitorFilterDto);
         }
     }
+
+    /**
+     * Method to fetch values from the Visitor table
+     * Dynamic Query will be formed based on the request filter
+     * If the list is empty then all vistor will be fetched
+     * Else will return only specific results     *
+     * @param requestFilters
+     * @return List of visitor response based on the filter request
+     */
+    @Override
+    public List<Visitor> fetchVisitorsDetails(List<FilterRequest> requestFilters) {
+        if (CollectionUtils.isEmpty(requestFilters)){
+            return visitorRepository.findAll();
+        }else {
+            Specification<Visitor> specificationRequest = filterSpecification.getSpecificationFromFilters(requestFilters);
+            return visitorRepository.findAll(specificationRequest);
+        }
+    }
+
+
 }
