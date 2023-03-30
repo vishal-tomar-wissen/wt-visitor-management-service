@@ -1,5 +1,6 @@
 package com.wissen.service;
 
+import com.wissen.dto.VisitorFilterDto;
 import com.wissen.entity.Visitor;
 
 import java.time.LocalDateTime;
@@ -29,11 +30,10 @@ public interface VisitorService {
     public Visitor logOut(String id);
 
     /**
-     * Method to get visitors details. If filter is given i.e fromInTime and toInTime.
+     * Method to get visitors details..
      *
-     * @param fromInTime
-     * @param toInTime
+     * @param visitorFilterDto
      * @return visitors
      */
-    public List<Visitor> getVisitorsDetails(LocalDateTime fromInTime, LocalDateTime toInTime);
+    public List<Visitor> getVisitorsDetails(VisitorFilterDto visitorFilterDto);
 }

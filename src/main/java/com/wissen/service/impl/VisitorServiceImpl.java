@@ -1,8 +1,10 @@
 package com.wissen.service.impl;
 
 import com.wissen.constants.Constants;
+import com.wissen.dto.VisitorFilterDto;
 import com.wissen.entity.Visitor;
 import com.wissen.exceptions.VisitorManagementException;
+import com.wissen.repository.VisitorEntityManagerRepository;
 import com.wissen.repository.VisitorRepository;
 import com.wissen.service.VisitorService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,6 +27,9 @@ public class VisitorServiceImpl implements VisitorService {
 
     @Autowired
     private VisitorRepository visitorRepository;
+
+    @Autowired
+    private VisitorEntityManagerRepository visitorEntityManagerRepository;
 
     /**
      * Save visitor details.
@@ -54,25 +58,19 @@ public class VisitorServiceImpl implements VisitorService {
     }
 
     /**
-     * Method to get visitors details. If filter is given i.e fromInTime and toInTime.
+     * Method to get visitors details.
      *
-     * @param fromInTime
-     * @param toInTime
+     * @param visitorFilterDto
      * @return visitors
      */
     @Override
-    public List<Visitor> getVisitorsDetails(LocalDateTime fromInTime, LocalDateTime toInTime) {
-        if(Objects.isNull(fromInTime) && Objects.nonNull(toInTime)) {
+    public List<Visitor> getVisitorsDetails(VisitorFilterDto visitorFilterDto) {
+        if(Objects.isNull(visitorFilterDto.getFromInTime()) && Objects.nonNull(visitorFilterDto.getToInTime())) {
             throw new VisitorManagementException(Constants.FILTER_ERROR);
-        } else if (Objects.nonNull(fromInTime) && Objects.isNull(toInTime)) {
+        } else if (Objects.nonNull(visitorFilterDto.getFromInTime()) && Objects.isNull(visitorFilterDto.getToInTime())) {
             throw new VisitorManagementException(Constants.FILTER_ERROR);
-        } else if (Objects.isNull(fromInTime) && Objects.isNull(toInTime)) {
-            log.info("Getting all visitors details");
-            return this.visitorRepository.findAll();
-        } else {
-            log.info("Getting visitors details from {} to {}", fromInTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                    toInTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-            return this.visitorRepository.findVisitorDetailsByFilter(fromInTime, toInTime);
+        }  else {
+            return this.visitorEntityManagerRepository.findVisitorDetailsByFilter(visitorFilterDto);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.wissen.controller;
 
 import com.wissen.constants.Constants;
+import com.wissen.dto.VisitorFilterDto;
 import com.wissen.entity.Visitor;
 import com.wissen.model.response.VisitorManagementResponse;
 import com.wissen.service.VisitorService;
@@ -70,17 +71,15 @@ public class VisitorController {
     /**
      * API method to get visitors details.
      *
-     * @param fromInTime
-     * @param toInTime
+     * @param visitorFilterDto
      * @return response
      */
-    @GetMapping
+    @PostMapping("/get")
     @ApiOperation(value = "API to get visitors details", nickname = "getVisitorsDetails")
-    public VisitorManagementResponse getVisitorsDetails(@RequestParam(required = false)  @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") LocalDateTime fromInTime,
-                                                        @RequestParam(required = false)  @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") LocalDateTime toInTime) {
+    public VisitorManagementResponse getVisitorsDetails(@RequestBody VisitorFilterDto visitorFilterDto) {
         try {
             log.info("Getting visitors details");
-            List<Visitor> visitors = this.visitorService.getVisitorsDetails(fromInTime, toInTime);
+            List<Visitor> visitors = this.visitorService.getVisitorsDetails(visitorFilterDto);
             return ResponseUtil.getResponse(visitors);
         }catch (Exception e) {
             log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
