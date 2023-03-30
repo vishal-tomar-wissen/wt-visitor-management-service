@@ -23,6 +23,12 @@ public class FilterSpecification<T> {
 
     final String PERCENTAGE = "%";
 
+    /**
+     * Method will create query using criteria builder and adds to predicate list
+     * the predicate list is converted to Specification for supporting jpa repo
+     * @param filter
+     * @return  Specification of dynamic query formed
+     */
     public Specification<T> getSpecificationFromFilters(List<FilterRequest> filter) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -33,6 +39,14 @@ public class FilterSpecification<T> {
         };
     }
 
+    /**
+     * Based on the operation in the filter request the queries are formed
+     * By default combing multiple filter request will be and clause
+     * @param predicates
+     * @param criteriaBuilder
+     * @param root
+     * @param input
+     */
     private void updatePredicate(List<Predicate> predicates, CriteriaBuilder criteriaBuilder, Root<T> root, FilterRequest input) {
         String fieldName = input.getFieldName();
         String value = input.getValues().get(0);
