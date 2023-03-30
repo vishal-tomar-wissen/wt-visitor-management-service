@@ -1,6 +1,7 @@
 package com.wissen.controller;
 
 import com.wissen.constants.Constants;
+import com.wissen.dto.VisitorFilterDto;
 import com.wissen.entity.Visitor;
 import com.wissen.model.response.VisitorManagementResponse;
 import com.wissen.service.VisitorService;
@@ -8,10 +9,13 @@ import com.wissen.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Controller Class for visitor.
@@ -61,6 +65,25 @@ public class VisitorController {
         }catch (Exception e) {
             log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
             return ResponseUtil.getResponse("Not able to update log out time.", "Logout time", e);
+        }
+    }
+
+    /**
+     * API method to get visitors details.
+     *
+     * @param visitorFilterDto
+     * @return response
+     */
+    @PostMapping("/get")
+    @ApiOperation(value = "API to get visitors details", nickname = "getVisitorsDetails")
+    public VisitorManagementResponse getVisitorsDetails(@RequestBody VisitorFilterDto visitorFilterDto) {
+        try {
+            log.info("Getting visitors details");
+            List<Visitor> visitors = this.visitorService.getVisitorsDetails(visitorFilterDto);
+            return ResponseUtil.getResponse(visitors);
+        }catch (Exception e) {
+            log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
+            return ResponseUtil.getResponse(e.getMessage(), "Visitors details", e);
         }
     }
 }

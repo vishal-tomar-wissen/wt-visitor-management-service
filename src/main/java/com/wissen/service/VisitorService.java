@@ -1,9 +1,10 @@
 package com.wissen.service;
 
-import com.wissen.dto.VisitorDto;
+import com.wissen.dto.VisitorFilterDto;
 import com.wissen.entity.Visitor;
 
-import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Service for visitor details related operation.
@@ -27,4 +28,12 @@ public interface VisitorService {
      * @return visitor
      */
     public Visitor logOut(String id);
+
+    /**
+     * Method to get visitors details..
+     *
+     * @param visitorFilterDto
+     * @return visitors
+     */
+    public List<Visitor> getVisitorsDetails(VisitorFilterDto visitorFilterDto);
 }
