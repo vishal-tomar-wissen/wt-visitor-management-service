@@ -7,7 +7,9 @@ import com.wissen.exceptions.VisitorManagementException;
 import com.wissen.repository.VisitorEntityManagerRepository;
 import com.wissen.repository.VisitorRepository;
 import com.wissen.service.VisitorService;
+import com.wissen.util.VisitorManagementUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.core.util.UuidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,9 +41,30 @@ public class VisitorServiceImpl implements VisitorService {
      */
     @Override
     public Visitor saveVisitorDetails(Visitor visitor) {
+
+        if(StringUtils.isBlank(visitor.getVisitorImageBase64())) {
+            throw new VisitorManagementException("Visitor image can not be empty.");
+        }
+
+        //decorating visitor details before saving
         visitor.setId(UuidUtil.getTimeBasedUuid().toString());
         visitor.setInTime(LocalDateTime.now());
-        return this.visitorRepository.save(visitor);
+        visitor.setOutTime(null);
+        visitor.setVisitorImage(VisitorManagementUtils.convertBase64ToByte(visitor.getVisitorImageBase64()));
+        visitor.setIdProofImage(StringUtils.isNotBlank(visitor.getIdProofImageBase64()) ?
+                VisitorManagementUtils.convertBase64ToByte(visitor.getIdProofImageBase64()) : null);
+
+        //decorating saved visitor details returning
+        Visitor savedVisitor = this.visitorRepository.save(visitor);
+
+        savedVisitor.setIdProofImageBase64(Objects.nonNull(visitor.getIdProofImage()) ?
+                VisitorManagementUtils.convertByteToBase64(visitor.getIdProofImage()) : null);
+        savedVisitor.setVisitorImageBase64(VisitorManagementUtils.convertByteToBase64(visitor.getVisitorImage()));
+
+        savedVisitor.setVisitorImage(null);
+        savedVisitor.setIdProofImage(null);
+
+        return savedVisitor;
     }
 
     /**
@@ -70,7 +93,19 @@ public class VisitorServiceImpl implements VisitorService {
         } else if (Objects.nonNull(visitorFilterDto.getFromInTime()) && Objects.isNull(visitorFilterDto.getToInTime())) {
             throw new VisitorManagementException(Constants.FILTER_ERROR);
         }  else {
-            return this.visitorEntityManagerRepository.findVisitorDetailsByFilter(visitorFilterDto);
+            List<Visitor> visitors =  this.visitorEntityManagerRepository.findVisitorDetailsByFilter(visitorFilterDto);
+
+            // Decorating images for UI.
+            visitors.forEach( visitor -> {
+                visitor.setIdProofImageBase64(Objects.nonNull(visitor.getIdProofImage()) ?
+                        VisitorManagementUtils.convertByteToBase64(visitor.getIdProofImage()) : null);
+                visitor.setVisitorImageBase64(VisitorManagementUtils.convertByteToBase64(visitor.getVisitorImage()));
+
+                visitor.setVisitorImage(null);
+                visitor.setIdProofImage(null);
+            });
+
+            return visitors;
         }
     }
 }
