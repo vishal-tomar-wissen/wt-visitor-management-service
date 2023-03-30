@@ -1,9 +1,9 @@
 package com.wissen.service;
 
-import com.wissen.dto.VisitorDto;
 import com.wissen.entity.Visitor;
 
-import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Service for visitor details related operation.
@@ -27,4 +27,13 @@ public interface VisitorService {
      * @return visitor
      */
     public Visitor logOut(String id);
+
+    /**
+     * Method to get visitors details. If filter is given i.e fromInTime and toInTime.
+     *
+     * @param fromInTime
+     * @param toInTime
+     * @return visitors
+     */
+    public List<Visitor> getVisitorsDetails(LocalDateTime fromInTime, LocalDateTime toInTime);
 }

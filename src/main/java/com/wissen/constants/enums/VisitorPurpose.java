@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  */
 public enum VisitorPurpose {
 
-    WALKIN("Meeting"),
+    WALKIN("Walkin"),
     INVITED("Invited");
 
     private String label;
