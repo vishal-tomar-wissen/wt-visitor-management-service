@@ -1,10 +1,8 @@
 package com.wissen.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -72,12 +70,20 @@ public class Visitor {
     @Column(nullable = true)
     private LocalDateTime outTime;
 
-    @NotBlank(message = "Visitor image can not be blank.")
+    @JsonIgnore
     @Lob
     @Column(nullable = false, length = 700000)
     private byte[] visitorImage;
 
+    @JsonIgnore
     @Lob
     @Column(nullable = true, length = 700000)
     private byte[] idProofImage;
+
+    @Transient
+    private String visitorImageBase64;
+
+    @Transient
+    private String idProofImageBase64;
+
 }

@@ -40,7 +40,7 @@ public class VisitorController {
     @ApiOperation(value = "API to save visitor details", nickname = "getRefData")
     public VisitorManagementResponse saveVisitorDetails(@RequestBody @Valid Visitor visitor) {
         try {
-            log.info("Saving visitors details : {}", visitor);
+            log.info("Saving visitors details");
             Visitor savedData = this.visitorService.saveVisitorDetails(visitor);
             return ResponseUtil.getResponse(savedData);
         }catch (Exception e) {
