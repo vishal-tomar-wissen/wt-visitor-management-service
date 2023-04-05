@@ -11,10 +11,8 @@ import java.util.stream.Collectors;
  */
 public enum VisitorType {
 
-    MEETING("Meeting"),
-    INTERVIEW("Interview"),
-    VENDOR("Vendor"),
-    OTHERS("Others");
+    WALKIN("Walkin"),
+    INVITED("Invited");
 
     private String label;
 

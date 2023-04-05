@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -132,12 +133,25 @@ public class VisitorServiceImpl implements VisitorService {
      */
     @Override
     public List<Visitor> fetchVisitorsDetails(List<FilterRequest> requestFilters) {
+        List<Visitor> visitors = new ArrayList<>();
         if (CollectionUtils.isEmpty(requestFilters)){
-            return visitorRepository.findAll();
+            visitors.addAll(visitorRepository.findAll());
         }else {
             Specification<Visitor> specificationRequest = filterSpecification.getSpecificationFromFilters(requestFilters);
-            return visitorRepository.findAll(specificationRequest);
+            visitors.addAll(visitorRepository.findAll(specificationRequest));
         }
+
+        // Decorating images for UI.
+        visitors.forEach( visitor -> {
+            visitor.setIdProofImageBase64(Objects.nonNull(visitor.getIdProofImage()) ?
+                    VisitorManagementUtils.convertByteToBase64(visitor.getIdProofImage()) : null);
+            visitor.setVisitorImageBase64(VisitorManagementUtils.convertByteToBase64(visitor.getVisitorImage()));
+
+            visitor.setVisitorImage(null);
+            visitor.setIdProofImage(null);
+        });
+
+        return visitors;
     }
 
 
