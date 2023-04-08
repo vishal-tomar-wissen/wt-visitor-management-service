@@ -5,6 +5,7 @@ import com.wissen.model.Error;
 import com.wissen.model.response.VisitorManagementResponse;
 import com.wissen.util.ResponseUtil;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ParamValidationExceptionHandler {
 
-    @ExceptionHandler({InvalidDefinitionException.class, MethodArgumentNotValidException.class})
+    @ExceptionHandler({InvalidDefinitionException.class, MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public VisitorManagementResponse handleInvalidArgumentException(MethodArgumentNotValidException ex) {
         final List<Error> errors= ex.getBindingResult().getFieldErrors().stream().map(e -> Error
