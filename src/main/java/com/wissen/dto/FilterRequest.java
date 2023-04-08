@@ -1,11 +1,13 @@
 package com.wissen.dto;
 
+import com.wissen.constants.enums.DataType;
 import com.wissen.constants.enums.OperatorOperator;
 import lombok.Data;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -26,4 +28,8 @@ public class FilterRequest {
     @Required
     @NotEmpty
     List<String> values;
+
+    @Required
+    @NotNull
+    DataType dataType;
 }
