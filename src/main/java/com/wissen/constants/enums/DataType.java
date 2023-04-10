@@ -48,7 +48,7 @@ public enum DataType {
                         .map(value -> String.valueOf(value)).collect(Collectors.toList());
             case DATE :
                 return values.stream()
-                        .map(value -> LocalDateTime.parse(String.valueOf(value), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")))
+                        .map(value -> LocalDateTime.parse(String.valueOf(value), DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                         .collect(Collectors.toList());
             default:
                 throw new VisitorManagementException("Data type not supported yet");

@@ -130,6 +130,6 @@ public class FilterSpecification<T> {
     }
 
     private LocalDateTime getDateTime(Object value) {
-        return LocalDateTime.parse(value.toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+        return LocalDateTime.parse(value.toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 }
