@@ -96,7 +96,7 @@ public class FilterSpecification<T> {
     }
 
     /**
-     * Method to handle betweenOperator for different different datatype.
+     * Method to handle betweenOperator for different datatype.
      *
      * @param predicates
      * @param values
