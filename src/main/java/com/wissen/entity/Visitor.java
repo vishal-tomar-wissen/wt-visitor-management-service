@@ -80,8 +80,7 @@ public class Visitor {
     @Lob
     @Column(nullable = true, length = 700000)
     private byte[] idProofImage;
-
-
+    
     @Transient
     private String visitorImageBase64;
 
