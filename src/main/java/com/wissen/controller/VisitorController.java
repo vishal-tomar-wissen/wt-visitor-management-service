@@ -43,7 +43,7 @@ public class VisitorController {
             return ResponseUtil.getResponse(savedData);
         }catch (Exception e) {
             log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
-            return ResponseUtil.getResponse("Not able to save visitor details", "Visitor Details", e);
+            return ResponseUtil.getResponse(e.getMessage(), "Visitor Details", e);
         }
     }
 
