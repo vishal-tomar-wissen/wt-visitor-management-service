@@ -80,8 +80,7 @@ public class Visitor {
     @Lob
     @Column(nullable = true, length = 700000)
     private byte[] idProofImage;
-
-    @NotBlank(message = "Visitor Image is mandatory")
+    
     @Transient
     private String visitorImageBase64;
 
