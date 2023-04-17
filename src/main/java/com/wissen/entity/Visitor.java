@@ -71,6 +71,12 @@ public class Visitor {
     @Column(nullable = true)
     private LocalDateTime outTime;
 
+    /**
+     * Field to set temporary card number to the visitor
+     */
+    @Column(nullable = true, length = 100)
+    private String tempCardNo;
+
     @JsonIgnore
     @Lob
     @Column(nullable = false, length = 700000)

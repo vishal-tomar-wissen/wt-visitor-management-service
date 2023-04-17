@@ -38,4 +38,18 @@ public interface VisitorService {
      * @return                  List of visitor response based on the filter request
      */
     List<Visitor> fetchVisitorsDetails(List<FilterRequest> requestFilters);
+
+    /**
+     * Method will fetch the visitor details whose missed updating out time
+     * Method is invoked via scheduler
+     * @return List of visitor details without time
+     */
+    List<Visitor> fetchVisitorsWhereOutIsNull();
+
+    /**
+     * Method will save or update the details based on the details provided
+     * @param outDetails
+     * @return List of saved or updated details
+     */
+    List<Visitor> saveOrUpdateVisitors(List<Visitor> outDetails);
 }
