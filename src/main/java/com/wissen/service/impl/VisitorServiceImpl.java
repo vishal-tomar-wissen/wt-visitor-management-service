@@ -50,20 +50,22 @@ public class VisitorServiceImpl implements VisitorService {
      */
     @Override
     public Visitor saveVisitorDetails(Visitor visitor) {
-
-        if(StringUtils.isBlank(visitor.getVisitorImageBase64())) {
+        //Mandatory for Visitor Image
+        if (StringUtils.isBlank(visitor.getVisitorImageBase64())) {
             throw new VisitorManagementException("Visitor image can not be empty.");
         }
-
+        //check the payload data is insert/update
+        if (StringUtils.isEmpty(visitor.getId())) {
+            visitor.setId(UuidUtil.getTimeBasedUuid().toString());
+            visitor.setInTime(LocalDateTime.now());
+        }
         //decorating visitor details before saving
-        visitor.setId(UuidUtil.getTimeBasedUuid().toString());
-        visitor.setInTime(LocalDateTime.now());
         visitor.setOutTime(null);
         visitor.setVisitorImage(VisitorManagementUtils.convertBase64ToByte(visitor.getVisitorImageBase64()));
         visitor.setIdProofImage(StringUtils.isNotBlank(visitor.getIdProofImageBase64()) ?
                 VisitorManagementUtils.convertBase64ToByte(visitor.getIdProofImageBase64()) : null);
 
-        //decorating saved visitor details returning
+        //save/update the details
         Visitor savedVisitor = this.visitorRepository.save(visitor);
 
         savedVisitor.setIdProofImageBase64(Objects.nonNull(visitor.getIdProofImage()) ?
@@ -94,21 +96,22 @@ public class VisitorServiceImpl implements VisitorService {
      * Dynamic Query will be formed based on the request filter
      * If the list is empty then all vistor will be fetched
      * Else will return only specific results     *
+     *
      * @param requestFilters
      * @return List of visitor response based on the filter request
      */
     @Override
     public List<Visitor> fetchVisitorsDetails(List<FilterRequest> requestFilters) {
         List<Visitor> visitors = new ArrayList<>();
-        if (CollectionUtils.isEmpty(requestFilters)){
+        if (CollectionUtils.isEmpty(requestFilters)) {
             visitors.addAll(visitorRepository.findAll());
-        }else {
+        } else {
             Specification<Visitor> specificationRequest = filterSpecification.getSpecificationFromFilters(requestFilters);
             visitors.addAll(visitorRepository.findAll(specificationRequest));
         }
 
         // Decorating images for UI.
-        visitors.forEach( visitor -> {
+        visitors.forEach(visitor -> {
             visitor.setIdProofImageBase64(Objects.nonNull(visitor.getIdProofImage()) ?
                     VisitorManagementUtils.convertByteToBase64(visitor.getIdProofImage()) : null);
             visitor.setVisitorImageBase64(VisitorManagementUtils.convertByteToBase64(visitor.getVisitorImage()));
