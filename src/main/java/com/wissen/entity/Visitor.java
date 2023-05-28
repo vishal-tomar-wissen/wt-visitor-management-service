@@ -1,12 +1,7 @@
 package com.wissen.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -43,18 +38,11 @@ public class Visitor {
 
     @NotBlank(message = "Point of contact can not be blank.")
     @Column(nullable = false, length = 100)
-    private String pointOfContact; // wissen id of point of contact
-
-    @Column(nullable = true, length = 150)
-    private String pointOfContactEmail;
+    private String employeeId; // wissen id of point of contact
 
     @NotBlank(message = "Location can not be blank.")
-    @Column(nullable = false, length = 255)
+    @Column(nullable = true, length = 255)
     private String location;
-
-    @NotBlank(message = "Please Specify Purpose of Visit")
-    @Column(nullable = false, length = 100)
-    private String purposeOfVisit;
 
     @Column(nullable = true, length = 50)
     private String visitorType;
@@ -64,7 +52,7 @@ public class Visitor {
     private String idProofType;
 
     @NotBlank(message = "Id proof number can not be blank.")
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     private String idProofNumber;
 
     /**
@@ -77,17 +65,9 @@ public class Visitor {
     @Lob
     @Column(nullable = false, length = 700000)
     private byte[] visitorImage;
-
-    @JsonIgnore
-    @Lob
-    @Column(nullable = true, length = 700000)
-    private byte[] idProofImage;
     
     @Transient
     private String visitorImageBase64;
-
-    @Transient
-    private String idProofImageBase64;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "visitor_id")

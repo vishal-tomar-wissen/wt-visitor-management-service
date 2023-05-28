@@ -18,7 +18,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Implementation class for visitor service.
@@ -65,7 +64,7 @@ public class VisitorServiceImpl implements VisitorService {
         Visitor savedVisitor = this.visitorRepository.save(visitor);
 
         // decorating after saving
-        visitorDecorator.decorateBeforeSaving(savedVisitor);
+        visitorDecorator.decorateAfterSaving(savedVisitor);
 
         return savedVisitor;
     }
@@ -91,12 +90,8 @@ public class VisitorServiceImpl implements VisitorService {
 
         // Decorating images for UI.
         visitors.forEach(visitor -> {
-            visitor.setIdProofImageBase64(Objects.nonNull(visitor.getIdProofImage()) ?
-                    VisitorManagementUtils.convertByteToBase64(visitor.getIdProofImage()) : null);
             visitor.setVisitorImageBase64(VisitorManagementUtils.convertByteToBase64(visitor.getVisitorImage()));
-
             visitor.setVisitorImage(null);
-            visitor.setIdProofImage(null);
         });
 
         return visitors;

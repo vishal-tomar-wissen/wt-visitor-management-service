@@ -7,7 +7,6 @@ import org.apache.logging.log4j.core.util.UuidUtil;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * Decorator class for visitor.
@@ -39,8 +38,6 @@ public class VisitorDecorator {
 
         // setting image to save
         visitor.setVisitorImage(VisitorManagementUtils.convertBase64ToByte(visitor.getVisitorImageBase64()));
-        visitor.setIdProofImage(StringUtils.isNotBlank(visitor.getIdProofImageBase64()) ?
-                VisitorManagementUtils.convertBase64ToByte(visitor.getIdProofImageBase64()) : null);
 
     }
 
@@ -50,8 +47,6 @@ public class VisitorDecorator {
      * @param visitor
      */
     public void decorateAfterSaving(Visitor visitor) {
-        visitor.setIdProofImageBase64(Objects.nonNull(visitor.getIdProofImage()) ?
-                VisitorManagementUtils.convertByteToBase64(visitor.getIdProofImage()) : null);
         visitor.setVisitorImageBase64(VisitorManagementUtils.convertByteToBase64(visitor.getVisitorImage()));
     }
 
