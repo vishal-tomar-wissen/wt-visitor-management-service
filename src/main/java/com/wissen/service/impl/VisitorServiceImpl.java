@@ -1,6 +1,6 @@
 package com.wissen.service.impl;
 
-import com.wissen.constants.Constants;
+import com.wissen.decorator.VisitorDecorator;
 import com.wissen.dto.FilterRequest;
 import com.wissen.enrich.FilterSpecification;
 import com.wissen.entity.Visitor;
@@ -10,17 +10,15 @@ import com.wissen.service.VisitorService;
 import com.wissen.util.VisitorManagementUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.core.util.UuidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 
 /**
  * Implementation class for visitor service.
@@ -33,6 +31,9 @@ public class VisitorServiceImpl implements VisitorService {
 
     @Autowired
     private VisitorRepository visitorRepository;
+
+    @Autowired
+    private VisitorDecorator visitorDecorator;
 
     /**
      * Filter Specification is used to enrich the input request
@@ -49,52 +50,30 @@ public class VisitorServiceImpl implements VisitorService {
      * @return savedVisitor
      */
     @Override
+    @Transactional
     public Visitor saveVisitorDetails(Visitor visitor) {
+
         //Mandatory for Visitor Image
         if (StringUtils.isBlank(visitor.getVisitorImageBase64())) {
             throw new VisitorManagementException("Visitor image can not be empty.");
         }
-        //check the payload data is insert/update
-        if (StringUtils.isEmpty(visitor.getId())) {
-            visitor.setId(UuidUtil.getTimeBasedUuid().toString());
-            visitor.setInTime(LocalDateTime.now());
-        }
-        //decorating visitor details before saving
-        visitor.setOutTime(null);
-        visitor.setVisitorImage(VisitorManagementUtils.convertBase64ToByte(visitor.getVisitorImageBase64()));
-        visitor.setIdProofImage(StringUtils.isNotBlank(visitor.getIdProofImageBase64()) ?
-                VisitorManagementUtils.convertBase64ToByte(visitor.getIdProofImageBase64()) : null);
+
+        // decorating before saving
+        visitorDecorator.decorateBeforeSaving(visitor);
 
         //save/update the details
         Visitor savedVisitor = this.visitorRepository.save(visitor);
 
-        savedVisitor.setIdProofImageBase64(Objects.nonNull(visitor.getIdProofImage()) ?
-                VisitorManagementUtils.convertByteToBase64(visitor.getIdProofImage()) : null);
-        savedVisitor.setVisitorImageBase64(VisitorManagementUtils.convertByteToBase64(visitor.getVisitorImage()));
-
-        savedVisitor.setVisitorImage(null);
-        savedVisitor.setIdProofImage(null);
+        // decorating after saving
+        visitorDecorator.decorateBeforeSaving(savedVisitor);
 
         return savedVisitor;
     }
 
     /**
-     * Method to update out time.
-     *
-     * @param id
-     * @return visitor
-     */
-    @Override
-    public Visitor logOut(String id) {
-        Visitor visitor = this.visitorRepository.findById(id).get();
-        visitor.setOutTime(LocalDateTime.now());
-        return visitorRepository.save(visitor);
-    }
-
-    /**
      * Method to fetch values from the Visitor table
      * Dynamic Query will be formed based on the request filter
-     * If the list is empty then all vistor will be fetched
+     * If the list is empty then all visitor will be fetched
      * Else will return only specific results     *
      *
      * @param requestFilters
@@ -123,16 +102,6 @@ public class VisitorServiceImpl implements VisitorService {
         return visitors;
     }
 
-    /**
-     * Method will fetch the visitor details whose missed updating out time
-     * Method is invoked via scheduler
-     *
-     * @return List of visitor details without time
-     */
-    @Override
-    public List<Visitor> fetchVisitorsWhereOutIsNull() {
-        return visitorRepository.findByOutTime(null);
-    }
 
     /**
      * Method will save or update the details based on the details provided
@@ -144,6 +113,5 @@ public class VisitorServiceImpl implements VisitorService {
     public List<Visitor> saveOrUpdateVisitors(List<Visitor> outDetails) {
         return visitorRepository.saveAll(outDetails);
     }
-
 
 }

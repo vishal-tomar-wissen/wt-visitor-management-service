@@ -48,25 +48,6 @@ public class VisitorController {
     }
 
     /**
-     * Method to update out time.
-     *
-     * @param id
-     * @return visitor
-     */
-    @PutMapping("/logout")
-    @ApiOperation(value = "API to Update logout time", nickname = "logout")
-    public VisitorManagementResponse logout(@RequestParam(required = true) String id) {
-        try {
-            log.info("Updating logout time for id : {}", id);
-            Visitor visitor = this.visitorService.logOut(id);
-            return ResponseUtil.getResponse(visitor);
-        }catch (Exception e) {
-            log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
-            return ResponseUtil.getResponse("Not able to update log out time.", "Logout time", e);
-        }
-    }
-
-    /**
      * Method to fetch values from the Visitor table
      * Dynamic Query will be formed based on the request filter
      * If the list is empty then all visitor data will be fetched

@@ -1,12 +1,16 @@
 package com.wissen.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Entity for visitor.
@@ -23,7 +27,7 @@ public class Visitor {
 
     @Id
     @Column(nullable = false, length = 75)
-    private String id;
+    private String visitorId;
 
     @NotBlank(message = "Name can not be blank.")
     @Column(nullable = false, length = 100)
@@ -39,7 +43,7 @@ public class Visitor {
 
     @NotBlank(message = "Point of contact can not be blank.")
     @Column(nullable = false, length = 100)
-    private String pointOfContact;
+    private String pointOfContact; // wissen id of point of contact
 
     @Column(nullable = true, length = 150)
     private String pointOfContactEmail;
@@ -63,14 +67,6 @@ public class Visitor {
     @Column(nullable = false, length = 100)
     private String idProofNumber;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @Column(nullable = false)
-    private LocalDateTime inTime;
-
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @Column(nullable = true)
-    private LocalDateTime outTime;
-
     /**
      * Field to set temporary card number to the visitor
      */
@@ -92,5 +88,9 @@ public class Visitor {
 
     @Transient
     private String idProofImageBase64;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "visitor_id")
+    public List<Timing> timings;
 
 }

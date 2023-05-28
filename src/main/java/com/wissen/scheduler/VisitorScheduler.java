@@ -1,6 +1,8 @@
 package com.wissen.scheduler;
 
+import com.wissen.entity.Timing;
 import com.wissen.entity.Visitor;
+import com.wissen.service.TimingService;
 import com.wissen.service.VisitorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ import java.util.List;
 public class VisitorScheduler {
 
     @Autowired
-    VisitorService visitorService;
+    TimingService timingService;
 
     /**
      * Scheduler to update all the visitor details who missed providing the out details.
@@ -30,11 +32,11 @@ public class VisitorScheduler {
     @Scheduled(cron = "0 0 0 * * *", zone = "Indian/Maldives")
     public void scheduleClosingOutTime(){
         log.info("cron expression ran at {}", new Date());
-        List<Visitor> outDetails = visitorService.fetchVisitorsWhereOutIsNull();
+        List<Timing> outDetails = timingService.fetchTimingWhereOutIsNull();
         if(!CollectionUtils.isEmpty(outDetails)){
-            outDetails.stream().forEach(visitor -> visitor.setOutTime(LocalDateTime.now()));
-            List<Visitor> updateVisitors = visitorService.saveOrUpdateVisitors(outDetails);
-            log.info("Number of visitor details are updated are {} ",updateVisitors.size());
+            outDetails.stream().forEach(timing -> timing.setOutTime(LocalDateTime.now()));
+            List<Timing> updateVisitors = timingService.saveOrUpdateTimings(outDetails);
+            log.info("Number of visitor timing details are updated are {} ",updateVisitors.size());
         }
         log.info("updated out time who missed to provide the out time");
 

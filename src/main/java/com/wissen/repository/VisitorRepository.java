@@ -16,11 +16,4 @@ import java.util.List;
 @Repository
 public interface VisitorRepository extends JpaRepository<Visitor, String>, JpaSpecificationExecutor<Visitor> {
 
-    /**
-     * Method will fetch the visitor details whose missed updating out time
-     * Method is invoked via scheduler
-     *
-     * @return List of visitor details without time
-     */
-    List<Visitor> findByOutTime(LocalDateTime outTime);
 }
