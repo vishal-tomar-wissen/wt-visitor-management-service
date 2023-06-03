@@ -3,9 +3,12 @@ package com.wissen.service.impl;
 import com.wissen.decorator.VisitorDecorator;
 import com.wissen.dto.FilterRequest;
 import com.wissen.enrich.FilterSpecification;
+import com.wissen.entity.Timing;
 import com.wissen.entity.Visitor;
 import com.wissen.exceptions.VisitorManagementException;
+import com.wissen.repository.TimingRepository;
 import com.wissen.repository.VisitorRepository;
+import com.wissen.service.TimingService;
 import com.wissen.service.VisitorService;
 import com.wissen.util.VisitorManagementUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +37,9 @@ public class VisitorServiceImpl implements VisitorService {
     @Autowired
     private VisitorDecorator visitorDecorator;
 
+    @Autowired
+    private TimingService timingService;
+
     /**
      * Filter Specification is used to enrich the input request
      * This class will form dynamic queries
@@ -53,9 +59,7 @@ public class VisitorServiceImpl implements VisitorService {
     public Visitor saveVisitorDetails(Visitor visitor) {
 
         //Mandatory for Visitor Image
-        if (StringUtils.isBlank(visitor.getVisitorImageBase64())) {
-            throw new VisitorManagementException("Visitor image can not be empty.");
-        }
+        validateVisitor(visitor);
 
         // decorating before saving
         visitorDecorator.decorateBeforeSaving(visitor);
@@ -63,8 +67,11 @@ public class VisitorServiceImpl implements VisitorService {
         //save/update the details
         Visitor savedVisitor = this.visitorRepository.save(visitor);
 
+        // saving timing
+        List<Timing> timings = this.timingService.saveOrUpdateTimings(visitor.getTimings());
+
         // decorating after saving
-        visitorDecorator.decorateAfterSaving(savedVisitor);
+        visitorDecorator.decorateAfterSaving(savedVisitor, timings);
 
         return savedVisitor;
     }
@@ -89,10 +96,7 @@ public class VisitorServiceImpl implements VisitorService {
         }
 
         // Decorating images for UI.
-        visitors.forEach(visitor -> {
-            visitor.setVisitorImageBase64(VisitorManagementUtils.convertByteToBase64(visitor.getVisitorImage()));
-            visitor.setVisitorImage(null);
-        });
+        this.visitorDecorator.decorateImageForUi(visitors);
 
         return visitors;
     }
@@ -107,6 +111,40 @@ public class VisitorServiceImpl implements VisitorService {
     @Override
     public List<Visitor> saveOrUpdateVisitors(List<Visitor> outDetails) {
         return visitorRepository.saveAll(outDetails);
+    }
+
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public List<Visitor> getVisitorsByPhoneNoOrEmail(String phoneNumber, String email) {
+        return this.visitorRepository.findByPhoneNumberOrEmail(phoneNumber, email);
+    }
+
+    public List<Visitor> getVisitorsDetails(List<FilterRequest> requestFilters) {
+
+
+        return null;
+    }
+
+    private void validateVisitor(Visitor visitor) {
+
+        //Mandatory for Visitor Image
+        if (StringUtils.isBlank(visitor.getVisitorImageBase64())) {
+            throw new VisitorManagementException("Visitor image can not be empty.");
+        }
+
+        List<Visitor> matchedVisitor = getVisitorsByPhoneNoOrEmail(visitor.getPhoneNumber(), visitor.getEmail());
+
+        // visitor details already present in DB.
+        if(!CollectionUtils.isEmpty(matchedVisitor)) {
+
+            // if visitor details already exist but UI asking to insert the record.
+            if(StringUtils.isBlank(visitor.getVisitorId())) {
+                throw new VisitorManagementException("Visitor details already exist");
+            }
+
+        }
     }
 
 }

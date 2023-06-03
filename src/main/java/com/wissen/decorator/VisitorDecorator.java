@@ -1,5 +1,6 @@
 package com.wissen.decorator;
 
+import com.wissen.entity.Timing;
 import com.wissen.entity.Visitor;
 import com.wissen.util.VisitorManagementUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -7,6 +8,7 @@ import org.apache.logging.log4j.core.util.UuidUtil;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Decorator class for visitor.
@@ -29,9 +31,11 @@ public class VisitorDecorator {
             visitor.setVisitorId(visitorId);
         }
 
+        LocalDateTime now = LocalDateTime.now();
         //decorating visitor details before saving
         visitor.getTimings().stream().forEach(timing -> {
-            timing.setInTime(LocalDateTime.now());
+            timing.setId(0L); //always insert
+            timing.setInTime(now);
             timing.setOutTime(null);
             timing.setVisitor(visitor);
         });
@@ -46,8 +50,21 @@ public class VisitorDecorator {
      *
      * @param visitor
      */
-    public void decorateAfterSaving(Visitor visitor) {
+    public void decorateAfterSaving(Visitor visitor, List<Timing> timings) {
         visitor.setVisitorImageBase64(VisitorManagementUtils.convertByteToBase64(visitor.getVisitorImage()));
+        visitor.setTimings(timings);
+    }
+
+    /**
+     * Decorate image for UI response.
+     *
+     * @param visitors
+     */
+    public void decorateImageForUi(List<Visitor> visitors) {
+        visitors.forEach(visitor -> {
+            visitor.setVisitorImageBase64(VisitorManagementUtils.convertByteToBase64(visitor.getVisitorImage()));
+            visitor.setVisitorImage(null);
+        });
     }
 
 }

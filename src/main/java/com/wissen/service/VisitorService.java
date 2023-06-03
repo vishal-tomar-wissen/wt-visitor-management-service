@@ -36,4 +36,12 @@ public interface VisitorService {
      * @return List of saved or updated details
      */
     List<Visitor> saveOrUpdateVisitors(List<Visitor> outDetails);
+
+    /**
+     * Method to fetch visitors by phoneNumber and email.
+     * @param phoneNumber
+     * @param email
+     * @return
+     */
+    List<Visitor> getVisitorsByPhoneNoOrEmail(String phoneNumber, String email);
 }

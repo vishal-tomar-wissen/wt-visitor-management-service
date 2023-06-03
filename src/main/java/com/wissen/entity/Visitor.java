@@ -37,18 +37,18 @@ public class Visitor {
     private String phoneNumber;
 
     @NotBlank(message = "Point of contact can not be blank.")
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     private String employeeId; // wissen id of point of contact
 
     @NotBlank(message = "Location can not be blank.")
     @Column(nullable = true, length = 255)
     private String location;
 
-    @Column(nullable = true, length = 50)
-    private String visitorType;
+    @Column(nullable = false, length = 50)
+    private String visitorPurpose;
 
     @NotBlank(message = "Please Specify Type of proof")
-    @Column(nullable = false, length = 50)
+    @Column(nullable = true, length = 50)
     private String idProofType;
 
     @NotBlank(message = "Id proof number can not be blank.")
@@ -65,12 +65,14 @@ public class Visitor {
     @Lob
     @Column(nullable = false, length = 700000)
     private byte[] visitorImage;
-    
+
+
+    /***************** Transients  object **********************/
+
     @Transient
     private String visitorImageBase64;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "visitor_id")
+    @Transient
     public List<Timing> timings;
 
 }

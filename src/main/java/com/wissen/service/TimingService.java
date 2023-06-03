@@ -22,10 +22,10 @@ public interface TimingService {
     /**
      * Method to save timing details.
      *
-     * @param outDetails
+     * @param timings
      * @return timings
      */
-    public List<Timing> saveOrUpdateTimings(List<Timing> outDetails);
+    public List<Timing> saveOrUpdateTimings(List<Timing> timings);
 
     /**
      * Method to update out time.
@@ -33,6 +33,6 @@ public interface TimingService {
      * @param id
      * @return visitor
      */
-    public Timing logOut(Long id);
+    public List<Timing> logOut(Long id, String visitorId);
 }
 

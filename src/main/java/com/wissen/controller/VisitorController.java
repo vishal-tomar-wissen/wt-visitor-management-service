@@ -3,6 +3,7 @@ package com.wissen.controller;
 import com.wissen.constants.Constants;
 import com.wissen.dto.FilterRequest;
 import com.wissen.entity.Visitor;
+import com.wissen.exceptions.VisitorManagementException;
 import com.wissen.model.response.VisitorManagementResponse;
 import com.wissen.service.VisitorService;
 import com.wissen.util.ResponseUtil;
@@ -41,9 +42,12 @@ public class VisitorController {
             log.info("Saving visitors details");
             Visitor savedData = this.visitorService.saveVisitorDetails(visitor);
             return ResponseUtil.getResponse(savedData);
-        }catch (Exception e) {
+        }catch (VisitorManagementException e) {
             log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
             return ResponseUtil.getResponse(e.getMessage(), "Visitor Details", e);
+        }catch (Exception e) {
+            log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
+            return ResponseUtil.getResponse("Not able to save the visitor details.", "Visitor Details", e);
         }
     }
 

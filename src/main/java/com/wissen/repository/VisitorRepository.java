@@ -16,4 +16,12 @@ import java.util.List;
 @Repository
 public interface VisitorRepository extends JpaRepository<Visitor, String>, JpaSpecificationExecutor<Visitor> {
 
+
+    /**
+     * Method to fetch visitors by phoneNumber and email.
+     * @param phoneNumber
+     * @param email
+     * @return
+     */
+    List<Visitor> findByPhoneNumberOrEmail(String phoneNumber, String email);
 }
