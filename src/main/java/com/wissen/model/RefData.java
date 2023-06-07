@@ -15,6 +15,5 @@ import java.util.List;
 public class RefData {
 
     private List<String> visitorsIdTypes;
-    private List<String> visitorsPurposes;
     private List<String> visitorsTypes;
 }

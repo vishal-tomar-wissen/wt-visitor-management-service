@@ -3,6 +3,7 @@ package com.wissen.repository;
 import com.wissen.entity.Visitor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -16,11 +17,13 @@ import java.util.List;
 @Repository
 public interface VisitorRepository extends JpaRepository<Visitor, String>, JpaSpecificationExecutor<Visitor> {
 
+
     /**
-     * Method will fetch the visitor details whose missed updating out time
-     * Method is invoked via scheduler
-     *
-     * @return List of visitor details without time
+     * Method to fetch visitors by phoneNumber and email.
+     * @param phoneNumber
+     * @param email
+     * @return
      */
-    List<Visitor> findByOutTime(LocalDateTime outTime);
+    List<Visitor> findByPhoneNumberOrEmail(String phoneNumber, String email);
+
 }

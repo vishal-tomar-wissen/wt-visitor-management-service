@@ -2,19 +2,19 @@ package com.wissen.enrich;
 
 import com.wissen.constants.enums.DataType;
 import com.wissen.dto.FilterRequest;
+import com.wissen.entity.Timing;
+import com.wissen.entity.Visitor;
 import com.wissen.exceptions.VisitorManagementException;
+import com.wissen.util.VisitorManagementUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Class to enrich the input request
@@ -128,6 +128,45 @@ public class FilterSpecification<T> {
         }
 
     }
+
+    public Specification<T> getSpecificationByTypeNameOrTiming(List<FilterRequest> filter) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            Join<Visitor, Timing> join = root.join("timings");
+
+            for (FilterRequest input : filter) {
+                if(VisitorManagementUtils.getAllowedTimingFilterField().contains(input.getFieldName())) {
+                    if(StringUtils.equals(input.getFieldName(), "inTime") || StringUtils.equals(input.getFieldName(), "outTime"))
+                        setDateCriteria(input, join, criteriaBuilder, predicates);
+                    else
+                        predicates.add(criteriaBuilder.and(criteriaBuilder.equal(join.get(input.getFieldName()), input.getValues().get(0))));
+                } else {
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get(input.getFieldName()), input.getValues().get(0))));
+                }
+
+            }
+
+            Predicate criteriaBuilder1 = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+        };
+    }
+
+    /**
+     * If only inTime and outTime both are given the we have to perform and operation between them.
+     *
+     * @param input
+     * @param join
+     * @param criteriaBuilder
+     * @param predicates
+     * @return isAnyDateCriteria
+     */
+    public boolean setDateCriteria(FilterRequest input, Join<Visitor, Timing> join,
+                                   CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
+        predicates.add(criteriaBuilder.and(criteriaBuilder.between(join.get(input.getFieldName()),
+                    getDateTime(input.getValues().get(0)), getDateTime(input.getValues().get(1)))));
+        return true;
+    }
+
 
     private LocalDateTime getDateTime(Object value) {
         return LocalDateTime.parse(value.toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);

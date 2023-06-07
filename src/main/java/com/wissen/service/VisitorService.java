@@ -21,15 +21,6 @@ public interface VisitorService {
     public Visitor saveVisitorDetails(Visitor visitor);
 
     /**
-     * Method to update out time.
-     *
-     * @param id
-     * @return visitor
-     */
-    public Visitor logOut(String id);
-
-
-    /**
      * Method to fetch values from the Visitor table
      * Dynamic Query will be formed based on the request filter
      * If the list is empty then all vistor will be fetched
@@ -40,16 +31,24 @@ public interface VisitorService {
     List<Visitor> fetchVisitorsDetails(List<FilterRequest> requestFilters);
 
     /**
-     * Method will fetch the visitor details whose missed updating out time
-     * Method is invoked via scheduler
-     * @return List of visitor details without time
-     */
-    List<Visitor> fetchVisitorsWhereOutIsNull();
-
-    /**
      * Method will save or update the details based on the details provided
      * @param outDetails
      * @return List of saved or updated details
      */
     List<Visitor> saveOrUpdateVisitors(List<Visitor> outDetails);
+
+    /**
+     * Method to fetch visitors by phoneNumber and email.
+     * @param visitor
+     * @return
+     */
+    List<Visitor> getVisitorsByPhoneNoOrEmail(Visitor visitor);
+
+    /**
+     * Get result by visit of purpose, name, inTime and outTime.
+     *
+     * @param requestFilters
+     * @return result
+     */
+    public List<Visitor> getVisitorByTypeNameOrTiming(List<FilterRequest> requestFilters);
 }

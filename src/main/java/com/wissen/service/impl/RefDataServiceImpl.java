@@ -1,7 +1,6 @@
 package com.wissen.service.impl;
 
 import com.wissen.constants.enums.VisitorIDType;
-import com.wissen.constants.enums.VisitorPurpose;
 import com.wissen.constants.enums.VisitorType;
 import com.wissen.model.RefData;
 import com.wissen.service.RefDataService;
@@ -22,7 +21,6 @@ public class RefDataServiceImpl implements RefDataService {
     public RefData getRefData() {
         return RefData.builder()
                 .visitorsIdTypes(VisitorIDType.getValues())
-                .visitorsPurposes(VisitorPurpose.getValues())
                 .visitorsTypes(VisitorType.getValues())
                 .build();
     }
