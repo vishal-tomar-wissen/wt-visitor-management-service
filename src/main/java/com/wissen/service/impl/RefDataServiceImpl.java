@@ -20,7 +20,7 @@ public class RefDataServiceImpl implements RefDataService {
     @Override
     public RefData getRefData() {
         return RefData.builder()
-                .visitorsIdTypes(ProofType.getValues())
+                .proofTypes(ProofType.getValues())
                 .visitorsTypes(VisitorType.getValues())
                 .build();
     }

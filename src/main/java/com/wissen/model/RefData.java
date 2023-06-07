@@ -14,6 +14,6 @@ import java.util.List;
 @Builder
 public class RefData {
 
-    private List<String> visitorsIdTypes;
+    private List<String> proofTypes;
     private List<String> visitorsTypes;
 }
