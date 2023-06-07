@@ -2,6 +2,7 @@ package com.wissen.controller;
 
 import com.wissen.constants.Constants;
 import com.wissen.dto.FilterRequest;
+import com.wissen.dto.VisitorDto;
 import com.wissen.entity.Visitor;
 import com.wissen.exceptions.VisitorManagementException;
 import com.wissen.model.response.VisitorManagementResponse;
@@ -12,7 +13,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -33,23 +37,23 @@ public class VisitorController {
     @Autowired
     private VisitorValidation visitorValidation;
 
+
     /**
      * Saving visitor details.
      *
-     * @param visitor
+     * @param visitorDto
      * @return
      */
     @PostMapping(consumes ={MediaType.APPLICATION_JSON_VALUE})
-    @ApiOperation(value = "API to save visitor details", nickname = "getRefData")
-    public VisitorManagementResponse saveVisitorDetails(@RequestBody @Valid Visitor visitor) {
+    @ApiOperation(value = "API to save visitor details", nickname = "Save Visitor")
+    public VisitorManagementResponse saveVisitorDetails(@RequestBody @Valid VisitorDto visitorDto) {
         try {
             log.info("Saving visitors details");
-
             //validation
-            this.visitorValidation.validateImage(visitor);
-            this.visitorValidation.validateVisitor(this.visitorService.getVisitorsByPhoneNoOrEmail(visitor), visitor);
+            List<Visitor> matchedVisitors = this.visitorService.getVisitorsByPhoneNoOrEmail(visitorDto.getPhoneNumber(), visitorDto.getEmail());
+            this.visitorValidation.validateVisitor(matchedVisitors, visitorDto);
 
-            Visitor savedData = this.visitorService.saveVisitorDetails(visitor);
+            Visitor savedData = this.visitorService.saveVisitorDetails(visitorDto);
             return ResponseUtil.getResponse(savedData);
         }catch (VisitorManagementException e) {
             log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());

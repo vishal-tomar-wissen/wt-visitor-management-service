@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.wissen.decorator.VisitorDecorator;
 import com.wissen.dto.FilterRequest;
+import com.wissen.dto.VisitorDto;
 import com.wissen.enrich.FilterSpecification;
 import com.wissen.entity.Timing;
 import com.wissen.entity.Visitor;
@@ -49,15 +50,15 @@ public class VisitorServiceImpl implements VisitorService {
     /**
      * Save visitor details.
      *
-     * @param visitor
+     * @param visitorDto
      * @return savedVisitor
      */
     @Override
     @Transactional
-    public Visitor saveVisitorDetails(Visitor visitor) {
+    public Visitor saveVisitorDetails(VisitorDto visitorDto) {
 
         // decorating before saving
-        visitorDecorator.decorateBeforeSaving(visitor);
+        Visitor visitor = visitorDecorator.decorateBeforeSaving(visitorDto);
 
         // if user already checked in
         List<Timing> timings = this.timingService.findByVisitorAndOutTime(visitor, null);
@@ -114,8 +115,8 @@ public class VisitorServiceImpl implements VisitorService {
      * @{inheritDoc}
      */
     @Override
-    public List<Visitor> getVisitorsByPhoneNoOrEmail(Visitor visitor) {
-        return this.visitorRepository.findByPhoneNumberOrEmail(visitor.getPhoneNumber(), visitor.getEmail());
+    public List<Visitor> getVisitorsByPhoneNoOrEmail(String phNo, String email) {
+        return this.visitorRepository.findByPhoneNumberOrEmail(phNo, email);
     }
 
     /**

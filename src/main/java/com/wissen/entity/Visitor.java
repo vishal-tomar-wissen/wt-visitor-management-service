@@ -37,22 +37,15 @@ public class Visitor {
     @Column(nullable = false, length = 15)
     private String phoneNumber;
 
-    @NotBlank(message = "Location can not be blank.")
-    @Column(nullable = true, length = 255)
     private String location;
 
-    @NotBlank(message = "Please Specify Type of proof")
-    @Column(nullable = true, length = 50)
     private String idProofType;
 
-    @NotBlank(message = "Id proof number can not be blank.")
-    @Column(nullable = true, length = 100)
     private String idProofNumber;
 
     /**
      * Field to set temporary card number to the visitor
      */
-    @Column(nullable = true, length = 100)
     private String tempCardNo;
 
     @JsonIgnore

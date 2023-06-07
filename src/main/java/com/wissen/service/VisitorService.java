@@ -1,6 +1,7 @@
 package com.wissen.service;
 
 import com.wissen.dto.FilterRequest;
+import com.wissen.dto.VisitorDto;
 import com.wissen.entity.Visitor;
 
 import java.util.List;
@@ -15,10 +16,10 @@ public interface VisitorService {
     /**
      * Save visitor details.
      *
-     * @param visitor
+     * @param visitorDto
      * @return savedVisitor
      */
-    public Visitor saveVisitorDetails(Visitor visitor);
+    public Visitor saveVisitorDetails(VisitorDto visitorDto);
 
     /**
      * Method to fetch values from the Visitor table
@@ -39,10 +40,11 @@ public interface VisitorService {
 
     /**
      * Method to fetch visitors by phoneNumber and email.
-     * @param visitor
+     * @param phNo
+     * @param email
      * @return
      */
-    List<Visitor> getVisitorsByPhoneNoOrEmail(Visitor visitor);
+    List<Visitor> getVisitorsByPhoneNoOrEmail(String phNo, String email);
 
     /**
      * Get result by visit of purpose, name, inTime and outTime.
