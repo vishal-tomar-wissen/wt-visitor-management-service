@@ -1,6 +1,6 @@
 package com.wissen.dto;
 
-import com.wissen.constants.enums.VisitorIDType;
+import com.wissen.constants.enums.ProofType;
 import com.wissen.constants.enums.VisitorType;
 import lombok.Data;
 
@@ -30,7 +30,7 @@ public class VisitorDto {
 
     private String location;
 
-    private VisitorIDType idProofType;
+    private ProofType proofType;
 
     private String idProofNumber;
 

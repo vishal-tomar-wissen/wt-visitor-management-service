@@ -87,6 +87,7 @@ public class VisitorServiceImpl implements VisitorService {
     public List<Visitor> fetchVisitorsDetails(List<FilterRequest> requestFilters) {
         List<Visitor> visitors = new ArrayList<>();
         if (CollectionUtils.isEmpty(requestFilters)) {
+            //TODO if no filter are passed, then fetch only 30 days visitor details
             visitors.addAll(visitorRepository.findAll());
         } else {
             Specification<Visitor> specificationRequest = filterSpecification.getSpecificationFromFilters(requestFilters);
@@ -127,7 +128,7 @@ public class VisitorServiceImpl implements VisitorService {
 
         List<Visitor> visitors = new ArrayList<>();
         if (CollectionUtils.isEmpty(requestFilters)) {
-            //fetch only 30days records pass in time in the request
+            //TODO fetch only 30days records pass in time in the request
             visitors.addAll(visitorRepository.findAll());
         } else {
             Specification<Visitor> specificationRequest = filterSpecification.getSpecificationByTypeNameOrTiming(requestFilters);

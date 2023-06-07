@@ -38,7 +38,7 @@ public class VisitorDecorator {
         visitor.setEmail(visitorDto.getEmail());
         visitor.setPhoneNumber(visitorDto.getPhoneNumber());
         visitor.setLocation(visitorDto.getLocation());
-        visitor.setIdProofType(visitorDto.getIdProofType().name());
+        visitor.setProofType(visitorDto.getProofType().name());
         visitor.setIdProofNumber(visitorDto.getIdProofNumber());
         visitor.setTempCardNo(visitorDto.getTempCardNo());
         // setting image to save

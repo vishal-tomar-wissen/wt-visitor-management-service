@@ -132,10 +132,13 @@ public class FilterSpecification<T> {
     public Specification<T> getSpecificationByTypeNameOrTiming(List<FilterRequest> filter) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            Join<Visitor, Timing> join = root.join("timings");
+
 
             for (FilterRequest input : filter) {
                 if(VisitorManagementUtils.getAllowedTimingFilterField().contains(input.getFieldName())) {
+                    //field has timing table attributes
+                    Join<Visitor, Timing> join = root.join("timings");
+
                     if(StringUtils.equals(input.getFieldName(), "inTime") || StringUtils.equals(input.getFieldName(), "outTime"))
                         setDateCriteria(input, join, criteriaBuilder, predicates);
                     else
@@ -145,7 +148,7 @@ public class FilterSpecification<T> {
                 }
 
             }
-
+            //TODO Check and remove if not needed
             Predicate criteriaBuilder1 = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };

@@ -1,6 +1,6 @@
 package com.wissen.service.impl;
 
-import com.wissen.constants.enums.VisitorIDType;
+import com.wissen.constants.enums.ProofType;
 import com.wissen.constants.enums.VisitorType;
 import com.wissen.model.RefData;
 import com.wissen.service.RefDataService;
@@ -20,7 +20,7 @@ public class RefDataServiceImpl implements RefDataService {
     @Override
     public RefData getRefData() {
         return RefData.builder()
-                .visitorsIdTypes(VisitorIDType.getValues())
+                .visitorsIdTypes(ProofType.getValues())
                 .visitorsTypes(VisitorType.getValues())
                 .build();
     }

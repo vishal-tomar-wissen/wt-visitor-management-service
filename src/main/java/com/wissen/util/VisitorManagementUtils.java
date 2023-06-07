@@ -52,7 +52,7 @@ public class VisitorManagementUtils {
      * @return fields
      */
     public static Set<String> getAllowedTimingFilterField() {
-        return Sets.newHashSet("id", "inTime", "outTime", "employeeId", "visitorType");
+        return Sets.newHashSet("inTime", "outTime", "employeeId", "visitorType");
     }
 
 }

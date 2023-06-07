@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  *
  * @author Vishal Tomar
  */
-public enum VisitorIDType {
+public enum ProofType {
 
     AADHAR("Aadhar"),
     VOTER_ID("Voter Id"),
@@ -19,12 +19,12 @@ public enum VisitorIDType {
 
     private String label;
 
-    VisitorIDType(String label) {
+    ProofType(String label) {
         this.label = label;
     }
 
     public static List<String> getValues() {
-        return Arrays.stream(VisitorIDType.values())
+        return Arrays.stream(ProofType.values())
                 .map(visitorIDType -> visitorIDType.label)
                 .collect(Collectors.toList());
     }

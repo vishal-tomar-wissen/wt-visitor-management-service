@@ -39,7 +39,7 @@ public class Visitor {
 
     private String location;
 
-    private String idProofType;
+    private String proofType;
 
     private String idProofNumber;
 
