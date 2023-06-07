@@ -3,6 +3,7 @@ package com.wissen.repository;
 import com.wissen.entity.Visitor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -24,4 +25,5 @@ public interface VisitorRepository extends JpaRepository<Visitor, String>, JpaSp
      * @return
      */
     List<Visitor> findByPhoneNumberOrEmail(String phoneNumber, String email);
+
 }

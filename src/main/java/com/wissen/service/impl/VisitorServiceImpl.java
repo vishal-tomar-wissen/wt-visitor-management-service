@@ -1,26 +1,24 @@
 package com.wissen.service.impl;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.wissen.decorator.VisitorDecorator;
 import com.wissen.dto.FilterRequest;
 import com.wissen.enrich.FilterSpecification;
 import com.wissen.entity.Timing;
 import com.wissen.entity.Visitor;
 import com.wissen.exceptions.VisitorManagementException;
-import com.wissen.repository.TimingRepository;
 import com.wissen.repository.VisitorRepository;
 import com.wissen.service.TimingService;
 import com.wissen.service.VisitorService;
-import com.wissen.util.VisitorManagementUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Implementation class for visitor service.
@@ -58,20 +56,19 @@ public class VisitorServiceImpl implements VisitorService {
     @Transactional
     public Visitor saveVisitorDetails(Visitor visitor) {
 
-        //Mandatory for Visitor Image
-        validateVisitor(visitor);
-
         // decorating before saving
         visitorDecorator.decorateBeforeSaving(visitor);
+
+        // if user already checked in
+        List<Timing> timings = this.timingService.findByVisitorAndOutTime(visitor, null);
+        if(!CollectionUtils.isEmpty(timings))
+            throw new VisitorManagementException("Visitor already checked in.");
 
         //save/update the details
         Visitor savedVisitor = this.visitorRepository.save(visitor);
 
-        // saving timing
-        List<Timing> timings = this.timingService.saveOrUpdateTimings(visitor.getTimings());
-
         // decorating after saving
-        visitorDecorator.decorateAfterSaving(savedVisitor, timings);
+        visitorDecorator.decorateAfterSaving(savedVisitor, null);
 
         return savedVisitor;
     }
@@ -117,34 +114,29 @@ public class VisitorServiceImpl implements VisitorService {
      * @{inheritDoc}
      */
     @Override
-    public List<Visitor> getVisitorsByPhoneNoOrEmail(String phoneNumber, String email) {
-        return this.visitorRepository.findByPhoneNumberOrEmail(phoneNumber, email);
+    public List<Visitor> getVisitorsByPhoneNoOrEmail(Visitor visitor) {
+        return this.visitorRepository.findByPhoneNumberOrEmail(visitor.getPhoneNumber(), visitor.getEmail());
     }
 
-    public List<Visitor> getVisitorsDetails(List<FilterRequest> requestFilters) {
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public List<Visitor> getVisitorByTypeNameOrTiming(List<FilterRequest> requestFilters) {
 
-
-        return null;
-    }
-
-    private void validateVisitor(Visitor visitor) {
-
-        //Mandatory for Visitor Image
-        if (StringUtils.isBlank(visitor.getVisitorImageBase64())) {
-            throw new VisitorManagementException("Visitor image can not be empty.");
+        List<Visitor> visitors = new ArrayList<>();
+        if (CollectionUtils.isEmpty(requestFilters)) {
+            //fetch only 30days records pass in time in the request
+            visitors.addAll(visitorRepository.findAll());
+        } else {
+            Specification<Visitor> specificationRequest = filterSpecification.getSpecificationByTypeNameOrTiming(requestFilters);
+            visitors.addAll(Sets.newHashSet(visitorRepository.findAll(specificationRequest)));
         }
 
-        List<Visitor> matchedVisitor = getVisitorsByPhoneNoOrEmail(visitor.getPhoneNumber(), visitor.getEmail());
+        // Decorating images for UI.
+        this.visitorDecorator.decorateImageForUi(visitors);
 
-        // visitor details already present in DB.
-        if(!CollectionUtils.isEmpty(matchedVisitor)) {
-
-            // if visitor details already exist but UI asking to insert the record.
-            if(StringUtils.isBlank(visitor.getVisitorId())) {
-                throw new VisitorManagementException("Visitor details already exist");
-            }
-
-        }
+        return Lists.newArrayList(visitors);
     }
 
 }

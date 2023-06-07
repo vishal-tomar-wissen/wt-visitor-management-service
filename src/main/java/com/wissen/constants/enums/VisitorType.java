@@ -5,14 +5,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Enum for visitor type.
+ * Enum for visitors type.
  *
  * @author Vishal Tomar
  */
 public enum VisitorType {
 
-    WALKIN("Walkin"),
-    INVITED("Invited");
+    MEETING("Meeting"),
+    INTERVIEW("Interview"),
+    VENDOR("Vendor"),
+    OTHERS("Others");
 
     private String label;
 
@@ -22,7 +24,8 @@ public enum VisitorType {
 
     public static List<String> getValues() {
         return Arrays.stream(VisitorType.values())
-                .map(visitorType -> visitorType.label)
+                .map(visitorPurpose -> visitorPurpose.label)
                 .collect(Collectors.toList());
     }
+
 }

@@ -12,8 +12,6 @@ import java.util.List;
  */
 public interface EmployeeDao {
 
-    public VisitorPointOfContactDetail getVisitorPointOfContact(String wissenId);
-
     public List<VisitorPointOfContactDetail> searchVisitorPointOfContact(String search);
 
 }

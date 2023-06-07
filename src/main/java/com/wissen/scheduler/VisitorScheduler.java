@@ -32,7 +32,7 @@ public class VisitorScheduler {
     @Scheduled(cron = "0 0 0 * * *", zone = "Indian/Maldives")
     public void scheduleClosingOutTime(){
         log.info("cron expression ran at {}", new Date());
-        List<Timing> outDetails = timingService.fetchTimingWhereOutIsNull();
+        List<Timing> outDetails = timingService.updateOutTimeWhereNull();
         if(!CollectionUtils.isEmpty(outDetails)){
             outDetails.stream().forEach(timing -> timing.setOutTime(LocalDateTime.now()));
             List<Timing> updateVisitors = timingService.saveOrUpdateTimings(outDetails);

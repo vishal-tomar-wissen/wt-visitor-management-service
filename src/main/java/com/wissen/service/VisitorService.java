@@ -39,9 +39,16 @@ public interface VisitorService {
 
     /**
      * Method to fetch visitors by phoneNumber and email.
-     * @param phoneNumber
-     * @param email
+     * @param visitor
      * @return
      */
-    List<Visitor> getVisitorsByPhoneNoOrEmail(String phoneNumber, String email);
+    List<Visitor> getVisitorsByPhoneNoOrEmail(Visitor visitor);
+
+    /**
+     * Get result by visit of purpose, name, inTime and outTime.
+     *
+     * @param requestFilters
+     * @return result
+     */
+    public List<Visitor> getVisitorByTypeNameOrTiming(List<FilterRequest> requestFilters);
 }

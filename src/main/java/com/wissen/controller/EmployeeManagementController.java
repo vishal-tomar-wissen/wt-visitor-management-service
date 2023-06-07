@@ -28,17 +28,6 @@ public class EmployeeManagementController {
     @Autowired
     private EmployeeManagementService employeeManagementService;
 
-    @GetMapping("/getPointOfContact")
-    public VisitorManagementResponse getVisitorPointOfContact(@RequestParam String wissenId) {
-        try {
-            VisitorPointOfContactDetail visitorPointOfContactDetail = employeeManagementService.getPointOfContactById(wissenId);
-            return  ResponseUtil.getResponse(visitorPointOfContactDetail);
-        }catch (Exception e) {
-            log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
-            return ResponseUtil.getResponse(e.getMessage(), "Point of Contact", e);
-        }
-    }
-
     @GetMapping("/searchPointOfContact")
     public VisitorManagementResponse searchVisitorPointOfContact(@RequestParam String search) {
         try {

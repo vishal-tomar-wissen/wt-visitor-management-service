@@ -25,17 +25,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public VisitorPointOfContactDetail getVisitorPointOfContact(String wissenId) {
-        String sql = "SELECT * FROM employee WHERE wissen_id = " + "'" + wissenId + "'";
-        List<VisitorPointOfContactDetail> visitorPointOfContactDetails = jdbcTemplate.query(sql,
-                new VisitorPointOfContactDetailMapper());
-        if(CollectionUtils.isEmpty(visitorPointOfContactDetails)) {
-            return null;
-        }
-        return visitorPointOfContactDetails.get(0);
-    }
-
-    @Override
     public List<VisitorPointOfContactDetail> searchVisitorPointOfContact(String search) {
         String likeClauseValue = "'%" + search + "%'";
         String sql = "SELECT * FROM employee WHERE first_name LIKE " + likeClauseValue + " OR last_name LIKE " + likeClauseValue + " OR " +

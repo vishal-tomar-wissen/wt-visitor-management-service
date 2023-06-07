@@ -33,16 +33,16 @@ public class TimingController {
     /**
      * Method to update out time.
      *
-     * @param id
+     * @param timingsId
      * @return timing
      */
     @PutMapping("/logout")
     @ApiOperation(value = "API to Update logout time", nickname = "logout")
-    public VisitorManagementResponse logout(@RequestParam(required = false, defaultValue = "0") Long id, @RequestParam(required = true) String visitorId) {
+    public VisitorManagementResponse logout(@RequestParam(required = false, defaultValue = "0") Long timingsId, @RequestParam(required = true) String visitorId) {
         try {
-            log.info("Updating logout time for id : {}", id);
+            log.info("Updating logout time for id : {}", timingsId);
             log.info("Updating logout time for visitorId : {}", visitorId);
-            List<Timing> timings = this.timingService.logOut(id, visitorId);
+            List<Timing> timings = this.timingService.logOut(timingsId, visitorId);
             return ResponseUtil.getResponse(timings);
         } catch (VisitorManagementException e) {
             log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());

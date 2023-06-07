@@ -18,6 +18,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "visitor")
+@EqualsAndHashCode
 public class Visitor {
 
     @Id
@@ -36,16 +37,9 @@ public class Visitor {
     @Column(nullable = false, length = 15)
     private String phoneNumber;
 
-    @NotBlank(message = "Point of contact can not be blank.")
-    @Column(nullable = true, length = 100)
-    private String employeeId; // wissen id of point of contact
-
     @NotBlank(message = "Location can not be blank.")
     @Column(nullable = true, length = 255)
     private String location;
-
-    @Column(nullable = false, length = 50)
-    private String visitorPurpose;
 
     @NotBlank(message = "Please Specify Type of proof")
     @Column(nullable = true, length = 50)
@@ -66,13 +60,12 @@ public class Visitor {
     @Column(nullable = false, length = 700000)
     private byte[] visitorImage;
 
+    @OneToMany(mappedBy = "visitor", cascade = CascadeType.ALL)
+    public List<Timing> timings;
 
     /***************** Transients  object **********************/
 
     @Transient
     private String visitorImageBase64;
-
-    @Transient
-    public List<Timing> timings;
 
 }

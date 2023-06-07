@@ -7,6 +7,7 @@ import com.wissen.exceptions.VisitorManagementException;
 import com.wissen.model.response.VisitorManagementResponse;
 import com.wissen.service.VisitorService;
 import com.wissen.util.ResponseUtil;
+import com.wissen.validation.VisitorValidation;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class VisitorController {
     @Autowired
     private VisitorService visitorService;
 
+    @Autowired
+    private VisitorValidation visitorValidation;
+
     /**
      * Saving visitor details.
      *
@@ -40,6 +44,11 @@ public class VisitorController {
     public VisitorManagementResponse saveVisitorDetails(@RequestBody @Valid Visitor visitor) {
         try {
             log.info("Saving visitors details");
+
+            //validation
+            this.visitorValidation.validateImage(visitor);
+            this.visitorValidation.validateVisitor(this.visitorService.getVisitorsByPhoneNoOrEmail(visitor), visitor);
+
             Visitor savedData = this.visitorService.saveVisitorDetails(visitor);
             return ResponseUtil.getResponse(savedData);
         }catch (VisitorManagementException e) {
@@ -59,12 +68,30 @@ public class VisitorController {
      * @param requestFilters
      * @return
      */
-    @PostMapping("/fetch")
+    @PostMapping("/genericFetch")
     @ApiOperation(value = "API to get visitors details", nickname = "getVisitorsDetails")
     public VisitorManagementResponse fetchVisitorsDetails(@RequestBody(required = false) List<FilterRequest> requestFilters) {
         try {
             log.info("Getting visitors details");
             List<Visitor> visitors = this.visitorService.fetchVisitorsDetails(requestFilters);
+            return ResponseUtil.getResponse(visitors);
+        }catch (Exception e) {
+            log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
+            return ResponseUtil.getResponse(e.getMessage(), "Visitors details", e);
+        }
+    }
+
+    @PostMapping("/fetch")
+    @ApiOperation(value = "API to get visitors details", nickname = "getVisitorsDetails")
+    public VisitorManagementResponse getVisitorsDetails(@RequestBody(required = false) List<FilterRequest> requestFilters) {
+        try {
+            //TODO try using generic way- add join if in/out time is passed as part of filter
+            log.info("Getting visitors details");
+
+            // validating
+            this.visitorValidation.validateFetchRequest(requestFilters);
+
+            List<Visitor> visitors = this.visitorService.getVisitorByTypeNameOrTiming(requestFilters);
             return ResponseUtil.getResponse(visitors);
         }catch (Exception e) {
             log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());

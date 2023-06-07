@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 /**
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "timing")
+@EqualsAndHashCode
 public class Timing {
 
     @Id
@@ -37,5 +39,13 @@ public class Timing {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @Column(nullable = true)
     private LocalDateTime outTime;
+
+    @NotBlank(message = "Point of contact can not be blank.")
+    @Column(nullable = true, length = 100)
+    private String employeeId; // wissen id of point of contact
+
+    @NotBlank(message = "Visitor type can not be null.")
+    @Column(nullable = false, length = 50)
+    private String visitorType;
 
 }

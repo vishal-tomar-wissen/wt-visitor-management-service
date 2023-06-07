@@ -13,14 +13,6 @@ import java.util.List;
 public interface EmployeeManagementService {
 
     /**
-     * Method to get point of contact info by wissen id.
-     *
-     * @param wissenId
-     * @return visitorPointOfContactDetail
-     */
-    public VisitorPointOfContactDetail getPointOfContactById(String wissenId) throws JSONException;
-
-    /**
      * Method to search point of contact info by wissen id.
      *
      * @param search

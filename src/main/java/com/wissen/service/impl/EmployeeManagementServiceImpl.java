@@ -32,21 +32,6 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
     EmployeeDao employeeDao;
 
     @Override
-    public VisitorPointOfContactDetail getPointOfContactById(String wissenId) throws JSONException {
-
-        if(applicationPropertiesConfig.isEmployeeManagementEnable()) {
-            String url = applicationPropertiesConfig.getEmployeeManagementBaseUrl()
-                    + applicationPropertiesConfig.getGetPointOfContactUrl() + wissenId;
-            List<VisitorPointOfContactDetail> result = getVisitorPointOfContactDetailsByUrl(url);
-            if(Objects.nonNull(result) && result.size() > 0)
-                return result.get(0);
-            return null;
-        } else {
-            return employeeDao.getVisitorPointOfContact(wissenId);
-        }
-    }
-
-    @Override
     public List<VisitorPointOfContactDetail> searchPointOfContactById(String search) throws JSONException {
 
         if(applicationPropertiesConfig.isEmployeeManagementEnable()) {

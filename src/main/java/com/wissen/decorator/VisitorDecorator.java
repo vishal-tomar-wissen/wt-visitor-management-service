@@ -27,14 +27,14 @@ public class VisitorDecorator {
 
         //check the payload data is insert/update
         if (StringUtils.isEmpty(visitor.getVisitorId())) {
-            String visitorId = UuidUtil.getTimeBasedUuid().toString();
-            visitor.setVisitorId(visitorId);
+            //insert, since visitor id is empty
+            visitor.setVisitorId(UuidUtil.getTimeBasedUuid().toString());
         }
 
         LocalDateTime now = LocalDateTime.now();
         //decorating visitor details before saving
         visitor.getTimings().stream().forEach(timing -> {
-            timing.setId(0L); //always insert
+            timing.setId(null); //always insert
             timing.setInTime(now);
             timing.setOutTime(null);
             timing.setVisitor(visitor);
@@ -52,7 +52,6 @@ public class VisitorDecorator {
      */
     public void decorateAfterSaving(Visitor visitor, List<Timing> timings) {
         visitor.setVisitorImageBase64(VisitorManagementUtils.convertByteToBase64(visitor.getVisitorImage()));
-        visitor.setTimings(timings);
     }
 
     /**
