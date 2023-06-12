@@ -49,5 +49,5 @@ public class VisitorDto {
     private String employeeId; // wissen id of point of contact
 
     @NotBlank(message = "Visitor type can not be null.")
-    private VisitorType visitorType;
+    private String visitorType;
 }
