@@ -9,6 +9,7 @@ import org.apache.logging.log4j.core.util.UuidUtil;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +28,8 @@ public class VisitorDecorator {
     public Visitor decorateBeforeSaving(VisitorDto visitorDto) {
 
         Visitor visitor = new Visitor();
+        visitor.setTimings(new ArrayList<>());
+
         //check the payload data is insert/update
         if (StringUtils.isEmpty(visitorDto.getVisitorId())) {
             //insert, since visitor id is empty
@@ -42,19 +45,20 @@ public class VisitorDecorator {
         visitor.setIdProofNumber(visitorDto.getIdProofNumber());
         visitor.setTempCardNo(visitorDto.getTempCardNo());
         // setting image to save
-        visitor.setVisitorImage(VisitorManagementUtils.convertBase64ToByte(visitor.getVisitorImageBase64()));
+        visitor.setVisitorImage(VisitorManagementUtils.convertBase64ToByte(visitorDto.getVisitorImageBase64()));
 
 
         LocalDateTime now = LocalDateTime.now();
         //decorating visitor details before saving
-        visitor.getTimings().stream().forEach(timing -> {
-            timing.setId(null); //always insert
-            timing.setInTime(now);
-            timing.setOutTime(null);
-            timing.setVisitor(visitor);
-            timing.setEmployeeId(visitorDto.getEmployeeId());
-            timing.setVisitorType(visitorDto.getVisitorType().name());
-        });
+        visitor.getTimings().add(Timing.builder()
+                .id(null)
+                .inTime(now)
+                .outTime(null)
+                .visitor(visitor)
+                .employeeId(visitorDto.getEmployeeId())
+                .visitorType(visitorDto.getVisitorType())
+                .build());
+
         return visitor;
 
     }
