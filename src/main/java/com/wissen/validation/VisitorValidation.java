@@ -51,7 +51,7 @@ public class VisitorValidation {
         for (FilterRequest input : requestFilters) {
             if (!validField.contains(input.getFieldName()))
                 throw new VisitorManagementException("Please provide correct filters.");
-            else if(StringUtils.equals(input.getFieldName(), "inTime") || StringUtils.equals(input.getFieldName(), "outTime")
+            else if((StringUtils.equals(input.getFieldName(), "inTime") || StringUtils.equals(input.getFieldName(), "outTime"))
                 && input.getValues().size() != 2)
                 throw new VisitorManagementException("Please provide correct filters.");
 
