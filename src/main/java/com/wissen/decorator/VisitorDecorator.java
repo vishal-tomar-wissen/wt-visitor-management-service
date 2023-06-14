@@ -1,5 +1,7 @@
 package com.wissen.decorator;
 
+import com.wissen.constants.enums.ProofType;
+import com.wissen.constants.enums.VisitorType;
 import com.wissen.dto.VisitorDto;
 import com.wissen.entity.Timing;
 import com.wissen.entity.Visitor;
@@ -41,7 +43,7 @@ public class VisitorDecorator {
         visitor.setEmail(visitorDto.getEmail());
         visitor.setPhoneNumber(visitorDto.getPhoneNumber());
         visitor.setLocation(visitorDto.getLocation());
-        visitor.setProofType(visitorDto.getProofType().name());
+        visitor.setProofType(visitorDto.getProofType());
         visitor.setIdProofNumber(visitorDto.getIdProofNumber());
         visitor.setTempCardNo(visitorDto.getTempCardNo());
         // setting image to save

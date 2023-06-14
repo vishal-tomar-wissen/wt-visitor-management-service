@@ -30,8 +30,10 @@ public class VisitorDto {
 
     private String location;
 
-    private ProofType proofType;
+    @NotBlank(message = "Visitor Proof Type can not be blank.")
+    private String proofType;
 
+    @NotBlank(message = "Visitor Proof Type Id can not be blank.")
     private String idProofNumber;
 
     /**
