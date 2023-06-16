@@ -81,8 +81,10 @@ public class VisitorDecorator {
      */
     public void decorateImageForUi(List<Visitor> visitors) {
         visitors.forEach(visitor -> {
-            visitor.setVisitorImageBase64(VisitorManagementUtils.convertByteToBase64(visitor.getVisitorImage()));
-            visitor.setVisitorImage(null);
+            if(visitor.getVisitorImage()!=null){
+                visitor.setVisitorImageBase64(VisitorManagementUtils.convertByteToBase64(visitor.getVisitorImage()));
+                visitor.setVisitorImage(null);
+            }
         });
     }
 

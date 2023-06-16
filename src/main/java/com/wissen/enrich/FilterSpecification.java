@@ -37,8 +37,15 @@ public class FilterSpecification<T> {
     public Specification<T> getSpecificationFromFilters(List<FilterRequest> filter) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+            Join<Visitor, Timing> join = null;
+            boolean isJoin = false;
             for (FilterRequest input : filter) {
-                updatePredicate(predicates, criteriaBuilder, root, input);
+                if(VisitorManagementUtils.getAllowedTimingFilterField().contains(input.getFieldName())){
+                    join = root.join("timings");
+                    isJoin = true;
+                }
+
+                updatePredicate(predicates, criteriaBuilder, root, input, join, isJoin);
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };
@@ -52,7 +59,7 @@ public class FilterSpecification<T> {
      * @param root
      * @param input
      */
-    private void updatePredicate(List<Predicate> predicates, CriteriaBuilder criteriaBuilder, Root<T> root, FilterRequest input) {
+    private void updatePredicate(List<Predicate> predicates, CriteriaBuilder criteriaBuilder, Root<T> root, FilterRequest input, Join<Visitor, Timing> join, boolean isJoin) {
         String fieldName = input.getFieldName();
         List<Object> values = DataType.getValue(input.getValues(), input.getDataType());
         boolean isDateDataType = input.getDataType() == DataType.DATE;
@@ -83,7 +90,12 @@ public class FilterSpecification<T> {
                 predicates.add(criteriaBuilder.and(criteriaBuilder.like(root.get(fieldName), PERCENTAGE.concat((String) value).concat(PERCENTAGE))));
                 return;
             case IN:
-                Expression<String> parentExpression = root.get(fieldName);
+                Expression<String> parentExpression = null;
+                if(isJoin)
+                    parentExpression = join.get(input.getFieldName());
+                else
+                    parentExpression =root.get(fieldName);
+
                 Predicate inPredicate = parentExpression.in(input.getValues());
                 predicates.add(inPredicate);
                 return;
