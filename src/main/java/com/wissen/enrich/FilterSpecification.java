@@ -6,7 +6,6 @@ import com.wissen.entity.Timing;
 import com.wissen.entity.Visitor;
 import com.wissen.exceptions.VisitorManagementException;
 import com.wissen.util.VisitorManagementUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -66,28 +65,46 @@ public class FilterSpecification<T> {
         Object value = values.get(0);
         switch (input.getOperator()){
             case EQUALS:
-                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get(fieldName), value)));
+                if(isJoin)
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.equal(join.get(fieldName), value)));
+                else
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get(fieldName), value)));
                 return;
             case NOT_EQ:
-                predicates.add(criteriaBuilder.and(criteriaBuilder.notEqual(root.get(fieldName), value)));
+                if(isJoin)
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.notEqual(join.get(fieldName), value)));
+                else
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.notEqual(root.get(fieldName), value)));
                 return;
             case GREATER_THAN:
-                 predicates.add(criteriaBuilder.and(criteriaBuilder.gt(root.get(fieldName), (Number) value)));
+                if (isJoin)
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.gt(join.get(fieldName), (Number) value)));
+                else
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.gt(root.get(fieldName), (Number) value)));
                 return;
             case GREATER_THAN_EQUALS:
-                predicates.add(criteriaBuilder.and(criteriaBuilder.ge(root.get(fieldName), (Number) value)));
+                if (isJoin)
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.ge(join.get(fieldName), (Number) value)));
+                else
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.ge(root.get(fieldName), (Number) value)));
                 return;
             case LESS_THAN:
-                predicates.add(criteriaBuilder.and(criteriaBuilder.lt(root.get(fieldName), (Number) value)));
+                if(isJoin)
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.lt(join.get(fieldName), (Number) value)));
+                else
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.lt(root.get(fieldName), (Number) value)));
                 return;
             case LESS_THAN_EQUALS:
-                if(isDateDataType)
-                    predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get(fieldName), getDateTime(value))));
+                if(isJoin)
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.le(join.get(fieldName), (Number) value)));
                 else
                     predicates.add(criteriaBuilder.and(criteriaBuilder.le(root.get(fieldName), (Number) value)));
                 return;
             case LIKE:
-                predicates.add(criteriaBuilder.and(criteriaBuilder.like(root.get(fieldName), PERCENTAGE.concat((String) value).concat(PERCENTAGE))));
+                if(isJoin)
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.like(join.get(fieldName), PERCENTAGE.concat((String) value).concat(PERCENTAGE))));
+                else
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.like(root.get(fieldName), PERCENTAGE.concat((String) value).concat(PERCENTAGE))));
                 return;
             case IN:
                 Expression<String> parentExpression = null;
@@ -100,7 +117,7 @@ public class FilterSpecification<T> {
                 predicates.add(inPredicate);
                 return;
             case BETWEEN:
-                 handleBetweenOperator(predicates, values, input, criteriaBuilder, root, fieldName);
+                 handleBetweenOperator(predicates, values, input, criteriaBuilder, root, fieldName, join, isJoin);
                 return;
             default:
                 throw new VisitorManagementException("Operation not supported yet");
@@ -118,24 +135,41 @@ public class FilterSpecification<T> {
      * @param fieldName
      */
     private void handleBetweenOperator(List<Predicate> predicates, List<Object> values, FilterRequest inputRequest,
-                                       CriteriaBuilder criteriaBuilder, Root<T> root, String fieldName) {
+                                       CriteriaBuilder criteriaBuilder, Root<T> root, String fieldName,
+                                       Join<Visitor, Timing> join, boolean isJoin) {
 
         switch (inputRequest.getDataType()) {
             case DATE :
-                predicates.add(criteriaBuilder.and(criteriaBuilder.between(root.get(fieldName),
+                if(isJoin)
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.between(join.get(fieldName),
+                            getDateTime(values.get(0)), getDateTime(values.get(1)))));
+                else
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.between(root.get(fieldName),
                         getDateTime(values.get(0)), getDateTime(values.get(1)))));
                 break;
             case INTEGER:
-                predicates.add(criteriaBuilder.and(criteriaBuilder.between(root.get(fieldName), (Integer) values.get(0),
-                        (Integer) values.get(1))));
+                if(isJoin)
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.between(join.get(fieldName), (Integer) values.get(0),
+                            (Integer) values.get(1))));
+                else
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.between(root.get(fieldName), (Integer) values.get(0),
+                            (Integer) values.get(1))));
                 break;
             case FLOAT:
-                predicates.add(criteriaBuilder.and(criteriaBuilder.between(root.get(fieldName), (Float) values.get(0),
-                        (Float) values.get(1))));
+                if(isJoin)
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.between(join.get(fieldName), (Float) values.get(0),
+                            (Float) values.get(1))));
+                else
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.between(root.get(fieldName), (Float) values.get(0),
+                            (Float) values.get(1))));
                 break;
             case DOUBLE:
-                predicates.add(criteriaBuilder.and(criteriaBuilder.between(root.get(fieldName), (Double) values.get(0),
-                        (Double) values.get(1))));
+                if(isJoin)
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.between(join.get(fieldName), (Double) values.get(0),
+                            (Double) values.get(1))));
+                else
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.between(root.get(fieldName), (Double) values.get(0),
+                            (Double) values.get(1))));
                 break;
         }
 
@@ -150,13 +184,9 @@ public class FilterSpecification<T> {
                 if(VisitorManagementUtils.getAllowedTimingFilterField().contains(input.getFieldName())) {
                     //field has timing table attributes
                     Join<Visitor, Timing> join = root.join("timings");
-
-                    if(StringUtils.equals(input.getFieldName(), "inTime") || StringUtils.equals(input.getFieldName(), "outTime"))
-                        setDateCriteria(input, join, criteriaBuilder, predicates);
-                    else
-                        predicates.add(criteriaBuilder.and(criteriaBuilder.equal(join.get(input.getFieldName()), input.getValues().get(0))));
+                    updatePredicate(predicates, criteriaBuilder, root, input, join, true);
                 } else {
-                    predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get(input.getFieldName()), input.getValues().get(0))));
+                    updatePredicate(predicates, criteriaBuilder, root, input, null, false);
                 }
 
             }

@@ -12,7 +12,7 @@ import java.util.List;
  * @created 30/03/2023 - 20:56
  * @project wt-visitor-management-service
  */
-public enum OperatorOperator {
+public enum Operator {
     GREATER_THAN,
     GREATER_THAN_EQUALS,
     LESS_THAN,
@@ -23,48 +23,70 @@ public enum OperatorOperator {
     BETWEEN,
     IN;
 
-    public boolean isValueIn(List<String> requiredValues, String value) {
+    public static boolean isValueIn(List<String> requiredValues, String value) {
         return requiredValues.contains(value);
     }
 
-    public boolean isValueIn(List<LocalDateTime> requiredValues, LocalDateTime value) {
+    public static boolean isValueIn(List<LocalDateTime> requiredValues, LocalDateTime value) {
         return requiredValues.contains(value);
     }
 
-    public boolean isValueEqual(String requiredValue, String value) {
+    public static boolean isValueEqual(String requiredValue, String value) {
         return StringUtils.equalsIgnoreCase(requiredValue, value);
     }
 
-    public boolean isValueEqual(LocalDateTime requiredValue, LocalDateTime value) {
+    public static boolean isValueEqual(LocalDateTime requiredValue, LocalDateTime value) {
         return requiredValue.equals(value);
     }
 
-    public boolean isValueNotEqual(String requiredValue, String value) {
+    public static boolean isValueNotEqual(String requiredValue, String value) {
         return !StringUtils.equalsIgnoreCase(requiredValue, value);
     }
 
-    public boolean isValueNotEqual(LocalDateTime requiredValue, LocalDateTime value) {
+    public static boolean isValueNotEqual(LocalDateTime requiredValue, LocalDateTime value) {
         return !requiredValue.equals(value);
     }
 
-    public boolean isGreaterThan(LocalDateTime requiredValue, LocalDateTime value) {
+    public static boolean isGreaterThan(LocalDateTime requiredValue, LocalDateTime value) {
         return value.isAfter(requiredValue);
     }
 
-    public boolean isGreaterThanOrEqual(LocalDateTime requiredValue, LocalDateTime value) {
+    public static boolean isGreaterThanOrEqual(LocalDateTime requiredValue, LocalDateTime value) {
         return value.isAfter(requiredValue) || isValueEqual(requiredValue, value);
     }
 
-    public boolean isLesserThan(LocalDateTime requiredValue, LocalDateTime value) {
+    public static boolean isLesserThan(LocalDateTime requiredValue, LocalDateTime value) {
         return value.isBefore(requiredValue);
     }
 
-    public boolean isLesserOrEqual(LocalDateTime requiredValue, LocalDateTime value) {
+    public static boolean isLesserOrEqual(LocalDateTime requiredValue, LocalDateTime value) {
         return value.isBefore(requiredValue) || isValueEqual(requiredValue, value);
     }
 
-    public boolean isValueBetween(LocalDateTime requiredValue, LocalDateTime value) {
-        return isGreaterThanOrEqual(requiredValue, value) && isLesserOrEqual(requiredValue, value);
+    public static boolean isValueBetween(LocalDateTime fromRequiredValue, LocalDateTime toRequiredValue, LocalDateTime value) {
+        return isGreaterThanOrEqual(fromRequiredValue, value) && isLesserOrEqual(toRequiredValue, value);
+    }
+
+    public static boolean isValueLike(String requiredValue, String value) {
+
+        if(StringUtils.startsWith(requiredValue, "%"))
+            return StringUtils.startsWith(value, StringUtils.substring(requiredValue, 1));
+        else if(StringUtils.endsWith(requiredValue, "%"))
+            return StringUtils.startsWith(value, StringUtils.removeEnd(requiredValue, "%"));
+        else {
+            // example %abc%abc%abc OR abc
+            String[] seperatedValues = StringUtils.split(requiredValue, value);
+
+            for(String subStr : seperatedValues) {
+                int startIndex = StringUtils.indexOf(value, subStr);
+                if(startIndex == -1)
+                    return false;
+
+                int lastIndex = startIndex + subStr.length();
+                value = StringUtils.substring(value, lastIndex);
+            }
+            return true;
+        }
     }
 
 }

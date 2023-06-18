@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import com.wissen.decorator.VisitorDecorator;
 import com.wissen.dto.FilterRequest;
 import com.wissen.dto.VisitorDto;
+import com.wissen.enrich.FilterResult;
 import com.wissen.enrich.FilterSpecification;
 import com.wissen.entity.Timing;
 import com.wissen.entity.Visitor;
@@ -13,11 +14,11 @@ import com.wissen.repository.VisitorRepository;
 import com.wissen.service.TimingService;
 import com.wissen.service.VisitorService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -133,10 +134,13 @@ public class VisitorServiceImpl implements VisitorService {
         } else {
             Specification<Visitor> specificationRequest = filterSpecification.getSpecificationByTypeNameOrTiming(requestFilters);
             visitors.addAll(Sets.newHashSet(visitorRepository.findAll(specificationRequest)));
+            visitors = FilterResult.filterExtraByFilterRequest(requestFilters, visitors);
         }
 
-        // Decorating images for UI.
-        this.visitorDecorator.decorateImageForUi(visitors);
+        if(CollectionUtils.isNotEmpty(visitors)) {
+            // Decorating images for UI.
+            this.visitorDecorator.decorateImageForUi(visitors);
+        }
 
         return Lists.newArrayList(visitors);
     }

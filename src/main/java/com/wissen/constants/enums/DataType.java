@@ -1,6 +1,5 @@
 package com.wissen.constants.enums;
 
-import com.google.common.collect.Lists;
 import com.wissen.exceptions.VisitorManagementException;
 
 import java.time.LocalDateTime;

@@ -34,4 +34,10 @@ public class Constants {
 
     /***************** Tables Name *****************/
     public static final String EMPLOYEE_TABLE = "employee";
+
+    /********************** Time type column name ******************/
+    public static final String IN_TIME_COLUMN = "inTime";
+    public static final String OUT_TIME_COLUMN = "outTime";
+    public static final String EMPLOYEE_ID_COLUMN = "employeeId";
+    public static final String VISITOR_TYPE_COLUMN = "visitorType";
 }
