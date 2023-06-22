@@ -85,7 +85,7 @@ public class VisitorManagementUtils {
     public static String getStringTypeTimingFieldValue(Timing timing, String fieldName) {
         switch (fieldName) {
             case Constants.EMPLOYEE_ID_COLUMN:
-                return timing.getEmployeeId();
+                return timing.getEmployee().getWissenId();
             case Constants.VISITOR_TYPE_COLUMN:
                 return timing.getVisitorType();
             default:

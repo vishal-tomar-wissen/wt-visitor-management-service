@@ -3,6 +3,7 @@ package com.wissen.decorator;
 import com.wissen.constants.enums.ProofType;
 import com.wissen.constants.enums.VisitorType;
 import com.wissen.dto.VisitorDto;
+import com.wissen.entity.Employee;
 import com.wissen.entity.Timing;
 import com.wissen.entity.Visitor;
 import com.wissen.util.VisitorManagementUtils;
@@ -52,12 +53,15 @@ public class VisitorDecorator {
 
         LocalDateTime now = LocalDateTime.now();
         //decorating visitor details before saving
+        Employee emp = new Employee();
+        emp.setWissenId(visitorDto.getEmployeeId());
         visitor.getTimings().add(Timing.builder()
                 .id(null)
                 .inTime(now)
                 .outTime(null)
                 .visitor(visitor)
-                .employeeId(visitorDto.getEmployeeId())
+                        .employee(emp)
+//                .employeeId(visitorDto.getEmployeeId())
                 .visitorType(visitorDto.getVisitorType())
                 .build());
 

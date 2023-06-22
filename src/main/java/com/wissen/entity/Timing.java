@@ -7,6 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Entity for timing.
@@ -40,9 +41,14 @@ public class Timing {
     @Column(nullable = true)
     private LocalDateTime outTime;
 
-    @NotBlank(message = "Point of contact can not be blank.")
-    @Column(nullable = true, length = 100)
-    private String employeeId; // wissen id of point of contact
+//    @NotBlank(message = "Point of contact can not be blank.")
+//    @Column(nullable = true, length = 100)
+//    private String employeeId; // wissen id of point of contact
+
+    //@OneToOne(mappedBy = "wissen_id", cascade = CascadeType.ALL, referencedColumnName = "employeeId")
+    @OneToOne
+    @JoinColumn(name = "wissen_id")
+    public Employee employee;
 
     @NotBlank(message = "Visitor type can not be null.")
     @Column(nullable = false, length = 50)
