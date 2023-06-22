@@ -84,7 +84,7 @@ public class VisitorManagementUtils {
      */
     public static String getStringTypeTimingFieldValue(Timing timing, String fieldName) {
         switch (fieldName) {
-            case Constants.EMPLOYEE_ID_COLUMN:
+            case Constants.WISSEN_ID_KEY:
                 return timing.getEmployee().getWissenId();
             case Constants.VISITOR_TYPE_COLUMN:
                 return timing.getVisitorType();
@@ -100,7 +100,7 @@ public class VisitorManagementUtils {
      */
     public static Set<String> getAllowedTimingFilterField() {
         return Sets.newHashSet(Constants.IN_TIME_COLUMN, Constants.OUT_TIME_COLUMN,
-                Constants.EMPLOYEE_ID_COLUMN, Constants.VISITOR_TYPE_COLUMN);
+                Constants.WISSEN_ID_KEY, Constants.VISITOR_TYPE_COLUMN);
     }
 
     /**
