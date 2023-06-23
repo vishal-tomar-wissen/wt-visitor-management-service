@@ -56,23 +56,4 @@ public interface VisitorService {
 	 */
 	public List<Visitor> getVisitorByTypeNameOrTiming(List<FilterRequest> requestFilters);
 
-
-	/**
-	 * Method to generate the OTP and send back to the visitor based n the mobile
-	 * number or emailId
-	 * 
-	 * @param phEmail
-	 * @return
-	 */
-	public String getOTP(String phEmail);
-
-	/**
-	 * Method to verify the OTP for login.
-	 * 
-	 * @param emailId
-	 * @param otp
-	 * @return
-	 */
-	public String verifyOTP(String emailId, String otp);
-
 }

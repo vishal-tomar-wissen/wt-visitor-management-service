@@ -1,21 +1,16 @@
 package com.wissen.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.Gson;
 import com.wissen.constants.Constants;
 import com.wissen.dto.FilterRequest;
 import com.wissen.dto.VisitorDto;
@@ -111,42 +106,6 @@ public class VisitorController {
 		} catch (Exception e) {
 			log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
 			return ResponseUtil.getResponse(e.getMessage(), "Visitors details", e);
-		}
-	}
-
-	@GetMapping("/getOTP")
-	@ApiOperation(value = "API to get OTP", nickname = "getOTP")
-	public VisitorManagementResponse sendOTP(
-			@Valid @NotBlank(message = "Email id or Mobile Number should not be blank") @RequestParam(required = false) String phEmail) {
-
-		try {
-
-			log.info("Generating OTP for login");
-
-			return ResponseUtil.getResponse(visitorService.getOTP(phEmail));
-		} catch (Exception e) {
-			log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
-			return ResponseUtil.getResponse(e.getMessage(), "OTP details", e);
-		}
-	}
-
-	@PostMapping("/verifyOTP")
-	public VisitorManagementResponse verifyOTP(@RequestBody(required = false) String data) {
-
-		try {
-
-			log.info("Verifying OTP");
-
-			@SuppressWarnings("unchecked")
-			Map<String, String> jsonJavaRootObject = new Gson().fromJson(data, Map.class);
-
-			String emailId = jsonJavaRootObject.get("phEmail");
-			String otp = jsonJavaRootObject.get("otp");
-
-			return ResponseUtil.getResponse(visitorService.verifyOTP(emailId, otp));
-		} catch (Exception e) {
-			log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
-			return ResponseUtil.getResponse(e.getMessage(), "Verify OTP details", e);
 		}
 	}
 

@@ -36,6 +36,7 @@ public interface VisitorRepository extends JpaRepository<Visitor, String>, JpaSp
 	 * @param emailId
 	 * @return
 	 */
-	Visitor findByEmail(String emailId);
+	@Query("SELECT v FROM Visitor v WHERE v.email = :identifier OR v.phoneNumber = :identifier")
+	Visitor findByEmailOrPhoneNumber(@Param("identifier") String identifier);
 
 }
