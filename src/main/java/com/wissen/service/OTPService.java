@@ -1,6 +1,6 @@
 package com.wissen.service;
 
-import com.wissen.dto.OTPDTO;
+import com.wissen.dto.OtpDTO;
 
 /**
  * Service for OTP details related operation.
@@ -10,11 +10,11 @@ import com.wissen.dto.OTPDTO;
 public interface OTPService {
 
 	/**
-	 * Method to generate the OTP and send back to the visitor based n the mobile
+	 * Method to generate the OTP and send back to the visitor based on the mobile
 	 * number or emailId
 	 * 
 	 * @param phEmail
-	 * @return
+	 * @return : validation or OTP generation success message
 	 */
 	public String sendOTP(String phEmail);
 
@@ -23,8 +23,8 @@ public interface OTPService {
 	 * 
 	 * @param emailId
 	 * @param otp
-	 * @return
+	 * @return : Success or Failure Message
 	 */
-	public String verifyOTP(OTPDTO data);
+	public String verifyOTP(OtpDTO data);
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,8 @@ import org.springframework.stereotype.Service;
 import com.wissen.dto.EmailDTO;
 
 /**
- * Service class to send an email
+ * Service class to send an email. It fetches the details from DTO class and
+ * email subject & email body message from properties file
  * 
  * @author Ankit Garg
  *
@@ -22,6 +24,12 @@ public class EmailService {
 
 	@Autowired
 	private JavaMailSender emailSender;
+
+	@Value("${email.subject}")
+	String emailSubject;
+
+	@Value("${email.body}")
+	String emailBody;
 
 	/**
 	 * Method for sending simple e-mail message.
@@ -47,7 +55,7 @@ public class EmailService {
 	 * @param emailSubject : Email Subject
 	 * @param emailBody    : Email Body
 	 */
-	public void sendEmail(String name, String emailId, String otp, String emailSubject, String emailBody) {
+	public void sendEmail(String name, String emailId, String otp) {
 
 		List<String> recipients = new ArrayList<>();
 		recipients.add(emailId);

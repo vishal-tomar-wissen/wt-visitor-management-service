@@ -163,6 +163,7 @@ public class VisitorManagementUtils {
 
 	/**
 	 * Method to validate if input data has correct either email or mobile number
+	 * format
 	 * 
 	 * @param phEmail
 	 * @return

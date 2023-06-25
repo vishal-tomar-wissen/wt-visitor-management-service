@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wissen.constants.Constants;
-import com.wissen.dto.OTPDTO;
+import com.wissen.dto.OtpDTO;
 import com.wissen.model.response.VisitorManagementResponse;
-import com.wissen.repository.VisitorRepository;
 import com.wissen.service.OTPService;
 import com.wissen.util.ResponseUtil;
 import com.wissen.util.VisitorManagementUtils;
@@ -23,65 +22,56 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Controller Class for OTP.
+ * Controller is used to send and verify OTP for existing visitors.
  *
  * @author Ankit Garg
  */
 @RestController
 @Slf4j
-@RequestMapping("/api/visitor")
+@RequestMapping("/api/visitor/exists")
 public class OTPController {
 
 	@Autowired
 	private OTPService otpService;
 
-	@Autowired
-	private VisitorRepository visitorRepository;
-
 	/**
 	 * This API generates the OTP based on input parameter either email id or mobile
-	 * number it fetches the record from DB and then generate the OTP for login
+	 * number. it fetches the record from DB and then generate the OTP for visitor
+	 * login
 	 * 
 	 * @param phEmail : Mobile number or Email Id
 	 * 
-	 * @return
+	 * @return : Validation or OTP generation success message
 	 */
 	@GetMapping("/sendOTP")
 	@ApiOperation(value = "API to send OTP", nickname = "sendOTP")
 	public VisitorManagementResponse validateAndSendOtp(
-			@Valid @NotBlank(message = "Email id or Mobile Number should not be blank") @RequestParam(required = true) String phEmail) {
-
+			@Valid @NotBlank(message = Constants.BLANK_EMAIL_OR_MOBILE) @RequestParam(required = true) String phEmail) {
 		try {
-
-			log.info("Generating OTP for login");
-
+			log.info("Checks if visitor is valid or not");
 			String response = "";
-
 			if (!VisitorManagementUtils.validateEmailOrMobile(phEmail))
-				response = "Please enter valid Email id or Mobile Number";
-
-			else if (!visitorRepository.existsByEmailIdOrPhoneNumber(phEmail))
-				response = "Visitor doesn't exists please register";
+				response = Constants.VALID_EMAIL_OR_MOBILE;
 			else
 				response = otpService.sendOTP(phEmail);
-
 			return ResponseUtil.getResponse(response);
 		} catch (Exception e) {
 			log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
-			return ResponseUtil.getResponse(e.getMessage(), "OTP details", e);
+			return ResponseUtil.getResponse(e.getMessage(), "Generate OTP details", e);
 		}
 	}
 
 	/**
 	 * This API verifies the generated OTP corresponds to email id or mobile number
 	 * 
-	 * @param data : input json format with emailId or Mobile number & OTP
-	 * @return
+	 * @param data : DTO class that contains emailId/Mobile number & OTP
+	 * 
+	 * @return : Success or failure Messages
 	 */
 	@PostMapping("/verifyOTP")
-	public VisitorManagementResponse verifyOTP(@RequestBody(required = false) OTPDTO data) {
+	public VisitorManagementResponse verifyOTP(@Valid @RequestBody(required = false) OtpDTO data) {
 		try {
-			log.info("Verifying OTP");
+			log.info("Verifying generated OTP");
 
 			return ResponseUtil.getResponse(otpService.verifyOTP(data));
 		} catch (Exception e) {
