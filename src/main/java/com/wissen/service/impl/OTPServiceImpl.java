@@ -77,12 +77,13 @@ public class OTPServiceImpl implements OTPService {
 		OTP visitorOTPRecord = otpRepository.findByVisitorEmailOrPhoneNumber(data.getPhEmail());
 		if (visitorOTPRecord != null) {
 			if (data.getOtp().equals(visitorOTPRecord.getOtp())) {
-				response = "OTP is valid";
+				response = Constants.VALID_OTP_MESSAGE;
+				setTimings(data.getPhEmail());
 				otpRepository.delete(visitorOTPRecord);
 			} else
-				response = "Invalid OTP";
+				response = Constants.INVALID_OTP_MESSAGE;
 		} else
-			response = "OTP is invalid. Try to generate new OTP";
+			response = Constants.NEW_OTP_MESSAGE;
 
 		return response;
 	}
@@ -97,5 +98,23 @@ public class OTPServiceImpl implements OTPService {
 		Random random = new Random();
 		int otp = random.nextInt(9999);
 		return String.format("%04d", otp);
+	}
+
+	/**
+	 * This method sets the timings for the visitor in timing table with inTime as
+	 * current time and outTime as null
+	 * 
+	 * @param phEmail : to fetch the visitor record
+	 */
+	private void setTimings(String phEmail) {
+
+		Visitor visitor = visitorRepository.findByEmailOrPhoneNumber(phEmail);
+		Timing timing = new Timing();
+		timing.setInTime(LocalDateTime.now());
+		timing.setOutTime(null);
+		timing.setVisitor(visitor);
+		timing.setEmployee(null);
+		timing.setVisitorType("Guest");
+		timingRepository.save(timing);
 	}
 }

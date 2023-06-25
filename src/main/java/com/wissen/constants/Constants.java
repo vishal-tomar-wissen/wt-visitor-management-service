@@ -46,5 +46,8 @@ public class Constants {
 	public static final String VISITOR_DOESNOT_EXISTS = "Visitor doesn't exists please register";
 	public static final String VISITOR_IN_FIRM = "Visitor is already in the firm";
 	public static final String OTP_GENERATION_MESSAGE = "OTP sent to your registered Email Id";
+	public static final String VALID_OTP_MESSAGE = "OTP is valid";
+	public static final String INVALID_OTP_MESSAGE = "Invalid OTP";
+	public static final String NEW_OTP_MESSAGE = "OTP is invalid. Try to generate new OTP";
 
 }
