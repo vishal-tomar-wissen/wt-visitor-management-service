@@ -17,10 +17,12 @@ public class FilterResult {
 
     public static List<Visitor> filterExtraByFilterRequest(List<FilterRequest> filterRequests, List<Visitor> visitors) {
 
+        List<FilterRequest> timingFilterRequests = VisitorManagementUtils.getTimingfilterRequests(filterRequests);
+
         for(Visitor visitor : visitors) {
 
             List<Timing> validValue = visitor.getTimings().stream()
-                    .filter(timing -> isValidByFilterRequest(filterRequests, timing)).collect(Collectors.toList());
+                    .filter(timing -> isValidByFilterRequest(timingFilterRequests, timing)).collect(Collectors.toList());
             if(CollectionUtils.isNotEmpty(validValue))
                 visitor.setTimings(validValue);
         }
@@ -81,7 +83,6 @@ public class FilterResult {
                 throw new VisitorManagementException("Please provide valid filter operator.");
         }
     }
-
 
 
 }

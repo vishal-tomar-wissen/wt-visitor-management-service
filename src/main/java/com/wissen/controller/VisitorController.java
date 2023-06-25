@@ -64,27 +64,6 @@ public class VisitorController {
         }
     }
 
-    /**
-     * Method to fetch values from the Visitor table
-     * Dynamic Query will be formed based on the request filter
-     * If the list is empty then all visitor data will be fetched
-     * Else will return only specific results
-     * @param requestFilters
-     * @return
-     */
-    @PostMapping("/genericFetch")
-    @ApiOperation(value = "API to get visitors details", nickname = "getVisitorsDetails")
-    public VisitorManagementResponse fetchVisitorsDetails(@RequestBody(required = false) List<FilterRequest> requestFilters) {
-        try {
-            log.info("Getting visitors details");
-            List<Visitor> visitors = this.visitorService.fetchVisitorsDetails(requestFilters);
-            return ResponseUtil.getResponse(visitors);
-        }catch (Exception e) {
-            log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());
-            return ResponseUtil.getResponse(e.getMessage(), "Visitors details", e);
-        }
-    }
-
     @PostMapping("/fetch")
     @ApiOperation(value = "API to get visitors details", nickname = "getVisitorsDetails")
     public VisitorManagementResponse getVisitorsDetails(@RequestBody(required = false) List<FilterRequest> requestFilters) {
@@ -95,7 +74,7 @@ public class VisitorController {
             // validating
             this.visitorValidation.validateFetchRequest(requestFilters);
 
-            List<Visitor> visitors = this.visitorService.getVisitorByTypeNameOrTiming(requestFilters);
+            List<Visitor> visitors = this.visitorService.getVisitorByFilter(requestFilters);
             return ResponseUtil.getResponse(visitors);
         }catch (Exception e) {
             log.error(Constants.EXCEPTION_LOG_PREFIX, e.getMessage());

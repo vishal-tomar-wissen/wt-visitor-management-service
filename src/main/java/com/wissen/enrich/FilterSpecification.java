@@ -28,29 +28,6 @@ public class FilterSpecification<T> {
     final String PERCENTAGE = "%";
 
     /**
-     * Method will create query using criteria builder and adds to predicate list
-     * the predicate list is converted to Specification for supporting jpa repo
-     * @param filter
-     * @return  Specification of dynamic query formed
-     */
-    public Specification<T> getSpecificationFromFilters(List<FilterRequest> filter) {
-        return (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            Join<Visitor, Timing> join = null;
-            boolean isJoin = false;
-            for (FilterRequest input : filter) {
-                if(VisitorManagementUtils.getAllowedTimingFilterField().contains(input.getFieldName())){
-                    join = root.join("timings");
-                    isJoin = true;
-                }
-
-                updatePredicate(predicates, criteriaBuilder, root, input, join, isJoin);
-            }
-            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-        };
-    }
-
-    /**
      * Based on the operation in the filter request the queries are formed
      * By default combing multiple filter request will be and clause
      * @param predicates
@@ -58,10 +35,10 @@ public class FilterSpecification<T> {
      * @param root
      * @param input
      */
-    private void updatePredicate(List<Predicate> predicates, CriteriaBuilder criteriaBuilder, Root<T> root, FilterRequest input, Join<Visitor, Timing> join, boolean isJoin) {
+    private void updatePredicate(List<Predicate> predicates, CriteriaBuilder criteriaBuilder, Root<T> root,
+                                 FilterRequest input, Join<Visitor, Timing> join, boolean isJoin) {
         String fieldName = input.getFieldName();
         List<Object> values = DataType.getValue(input.getValues(), input.getDataType());
-        boolean isDateDataType = input.getDataType() == DataType.DATE;
         Object value = values.get(0);
         switch (input.getOperator()){
             case EQUALS:
@@ -175,7 +152,7 @@ public class FilterSpecification<T> {
 
     }
 
-    public Specification<T> getSpecificationByTypeNameOrTiming(List<FilterRequest> filter) {
+    public Specification<T> getSpecificationFromFilters(List<FilterRequest> filter) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -190,26 +167,8 @@ public class FilterSpecification<T> {
                 }
 
             }
-            //TODO Check and remove if not needed
-            Predicate criteriaBuilder1 = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };
-    }
-
-    /**
-     * If only inTime and outTime both are given the we have to perform and operation between them.
-     *
-     * @param input
-     * @param join
-     * @param criteriaBuilder
-     * @param predicates
-     * @return isAnyDateCriteria
-     */
-    public boolean setDateCriteria(FilterRequest input, Join<Visitor, Timing> join,
-                                   CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
-        predicates.add(criteriaBuilder.and(criteriaBuilder.between(join.get(input.getFieldName()),
-                    getDateTime(input.getValues().get(0)), getDateTime(input.getValues().get(1)))));
-        return true;
     }
 
 

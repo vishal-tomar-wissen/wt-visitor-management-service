@@ -76,33 +76,6 @@ public class VisitorServiceImpl implements VisitorService {
     }
 
     /**
-     * Method to fetch values from the Visitor table
-     * Dynamic Query will be formed based on the request filter
-     * If the list is empty then all visitor will be fetched
-     * Else will return only specific results     *
-     *
-     * @param requestFilters
-     * @return List of visitor response based on the filter request
-     */
-    @Override
-    public List<Visitor> fetchVisitorsDetails(List<FilterRequest> requestFilters) {
-        List<Visitor> visitors = new ArrayList<>();
-        if (CollectionUtils.isEmpty(requestFilters)) {
-            //TODO if no filter are passed, then fetch only 30 days visitor details
-            visitors.addAll(visitorRepository.findAll());
-        } else {
-            Specification<Visitor> specificationRequest = filterSpecification.getSpecificationFromFilters(requestFilters);
-            visitors.addAll(visitorRepository.findAll(specificationRequest));
-        }
-
-        // Decorating images for UI.
-        this.visitorDecorator.decorateImageForUi(visitors);
-
-        return visitors;
-    }
-
-
-    /**
      * Method will save or update the details based on the details provided
      *
      * @param outDetails
@@ -125,14 +98,14 @@ public class VisitorServiceImpl implements VisitorService {
      * @{inheritDoc}
      */
     @Override
-    public List<Visitor> getVisitorByTypeNameOrTiming(List<FilterRequest> requestFilters) {
+    public List<Visitor> getVisitorByFilter(List<FilterRequest> requestFilters) {
 
         List<Visitor> visitors = new ArrayList<>();
         if (CollectionUtils.isEmpty(requestFilters)) {
             //TODO fetch only 30days records pass in time in the request
             visitors.addAll(visitorRepository.findAll());
         } else {
-            Specification<Visitor> specificationRequest = filterSpecification.getSpecificationByTypeNameOrTiming(requestFilters);
+            Specification<Visitor> specificationRequest = filterSpecification.getSpecificationFromFilters(requestFilters);
             visitors.addAll(Sets.newHashSet(visitorRepository.findAll(specificationRequest)));
             visitors = FilterResult.filterExtraByFilterRequest(requestFilters, visitors);
         }

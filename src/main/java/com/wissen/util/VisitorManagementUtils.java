@@ -2,6 +2,7 @@ package com.wissen.util;
 
 import com.google.common.collect.Sets;
 import com.wissen.constants.Constants;
+import com.wissen.dto.FilterRequest;
 import com.wissen.entity.Timing;
 import com.wissen.exceptions.VisitorManagementException;
 import lombok.AccessLevel;
@@ -89,7 +90,7 @@ public class VisitorManagementUtils {
             case Constants.VISITOR_TYPE_COLUMN:
                 return timing.getVisitorType();
             default:
-                throw new VisitorManagementException(fieldName + "is not valid field or String type.");
+                throw new VisitorManagementException(fieldName + " is not valid field or String type.");
         }
     }
 
@@ -121,5 +122,16 @@ public class VisitorManagementUtils {
      */
     public static LocalDateTime getLocalDateTimeValue(String value) {
         return LocalDateTime.parse(value);
+    }
+
+    /**
+     * Method filter out only timing table field filter request.
+     * @param filterRequests
+     * @return
+     */
+    public static List<FilterRequest> getTimingfilterRequests(List<FilterRequest> filterRequests) {
+        return filterRequests.stream().filter(filterRequest ->
+                VisitorManagementUtils.getAllowedTimingFilterField().contains(filterRequest.getFieldName()))
+                .collect(Collectors.toList());
     }
 }
