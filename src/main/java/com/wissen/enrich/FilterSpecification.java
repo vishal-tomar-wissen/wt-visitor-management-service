@@ -1,7 +1,10 @@
 package com.wissen.enrich;
 
+import com.google.common.collect.Lists;
+import com.wissen.constants.Constants;
 import com.wissen.constants.enums.DataType;
 import com.wissen.dto.FilterRequest;
+import com.wissen.entity.Employee;
 import com.wissen.entity.Timing;
 import com.wissen.entity.Visitor;
 import com.wissen.exceptions.VisitorManagementException;
@@ -85,8 +88,20 @@ public class FilterSpecification<T> {
                 return;
             case IN:
                 Expression<String> parentExpression = null;
-                if(isJoin)
-                    parentExpression = join.get(input.getFieldName());
+                if(isJoin) {
+//                    parentExpression = join.get(input.getFieldName());
+                    if(input.getFieldName().equalsIgnoreCase(Constants.WISSEN_ID)){
+                        parentExpression = join.get("employee");
+                        Employee emp= new Employee();
+                        emp.setWissenId(input.getValues().get(0));
+                        Predicate inPredicate = parentExpression.in(Lists.newArrayList(emp));
+                        predicates.add(inPredicate);
+                        return;
+
+                    }else{
+                        parentExpression = join.get(input.getFieldName());
+                    }
+                }
                 else
                     parentExpression =root.get(fieldName);
 

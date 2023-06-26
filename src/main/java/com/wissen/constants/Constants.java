@@ -39,4 +39,5 @@ public class Constants {
     public static final String IN_TIME_COLUMN = "inTime";
     public static final String OUT_TIME_COLUMN = "outTime";
     public static final String VISITOR_TYPE_COLUMN = "visitorType";
+    public static final String WISSEN_ID = "wissenId";
 }
