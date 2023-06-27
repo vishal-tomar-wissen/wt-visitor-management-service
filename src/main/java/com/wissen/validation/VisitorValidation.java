@@ -47,24 +47,9 @@ public class VisitorValidation {
     }
 
     public void validateFetchRequest(List<FilterRequest> requestFilters) {
-        Set<String> validField = Sets.newHashSet("fullName", "visitorType", "inTime", "outTime");
         for (FilterRequest input : requestFilters) {
-            if (!validField.contains(input.getFieldName()))
-                throw new VisitorManagementException("Please provide correct filters.");
-            else if((StringUtils.equals(input.getFieldName(), "inTime") || StringUtils.equals(input.getFieldName(), "outTime"))
+            if((StringUtils.equals(input.getFieldName(), "inTime") || StringUtils.equals(input.getFieldName(), "outTime"))
                 && input.getValues().size() != 2)
-                throw new VisitorManagementException("Please provide correct filters.");
-
-        }
-    }
-
-    public void validateGenericFetchRequest(List<FilterRequest> requestFilters) {
-        for (FilterRequest input : requestFilters) {
-            if (!VisitorManagementUtils.getAllowedVisitorFilterField().contains(input.getFieldName())
-                    || !VisitorManagementUtils.getAllowedTimingFilterField().contains(input.getFieldName()))
-                throw new VisitorManagementException("Please provide correct filters.");
-            else if(StringUtils.equals(input.getFieldName(), "inTime") || StringUtils.equals(input.getFieldName(), "outTime")
-                    && input.getValues().size() != 2)
                 throw new VisitorManagementException("Please provide correct filters.");
 
         }

@@ -1,7 +1,5 @@
 package com.wissen.decorator;
 
-import com.wissen.constants.enums.ProofType;
-import com.wissen.constants.enums.VisitorType;
 import com.wissen.dto.VisitorDto;
 import com.wissen.entity.Employee;
 import com.wissen.entity.Timing;
@@ -63,6 +61,7 @@ public class VisitorDecorator {
                         .employee(emp)
 //                .employeeId(visitorDto.getEmployeeId())
                 .visitorType(visitorDto.getVisitorType())
+                        .assetList(visitorDto.getAssetList())
                 .build());
 
         return visitor;
