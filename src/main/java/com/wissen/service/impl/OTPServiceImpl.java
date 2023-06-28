@@ -1,6 +1,8 @@
 package com.wissen.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -109,12 +111,21 @@ public class OTPServiceImpl implements OTPService {
 	private void setTimings(String phEmail) {
 
 		Visitor visitor = visitorRepository.findByEmailOrPhoneNumber(phEmail);
-		Timing timing = new Timing();
-		timing.setInTime(LocalDateTime.now());
-		timing.setOutTime(null);
-		timing.setVisitor(visitor);
-		timing.setEmployee(null);
-		timing.setVisitorType("Guest");
-		timingRepository.save(timing);
+
+		if (visitor != null) {
+
+			// Sort the timings list based on the outTime in descending order
+			Collections.sort(visitor.getTimings(), Comparator.comparing(Timing::getOutTime).reversed());
+
+			Timing timing = new Timing();
+			timing.setInTime(LocalDateTime.now());
+			timing.setOutTime(null);
+			timing.setVisitor(visitor);
+			timing.setEmployee(visitor.getTimings().get(0).getEmployee());
+			timing.setVisitorType(visitor.getTimings().get(0).getVisitorType());
+			timingRepository.save(timing);
+
+		}
 	}
+
 }

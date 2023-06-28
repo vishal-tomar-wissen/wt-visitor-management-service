@@ -25,6 +25,4 @@ public interface OTPRepository extends JpaRepository<OTP, Integer> {
 
 	@Query("SELECT v FROM OTP v WHERE v.visitor.email = :identifier OR v.visitor.phoneNumber = :identifier")
 	OTP findByVisitorEmailOrPhoneNumber(@Param("identifier") String identifier);
-	
-	int deleteByExpiryBefore(LocalDateTime currentDateTime);
 }

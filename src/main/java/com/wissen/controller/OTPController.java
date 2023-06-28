@@ -69,7 +69,7 @@ public class OTPController {
 	 * @return : Success or failure Messages
 	 */
 	@PostMapping("/verifyOTP")
-	public VisitorManagementResponse verifyOTP(@Valid @RequestBody(required = false) OtpDTO data) {
+	public VisitorManagementResponse verifyOTP(@Valid @RequestBody OtpDTO data) {
 		try {
 			log.info("Verifying generated OTP");
 
