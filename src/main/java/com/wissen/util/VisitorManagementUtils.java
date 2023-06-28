@@ -134,4 +134,50 @@ public class VisitorManagementUtils {
                 VisitorManagementUtils.getAllowedTimingFilterField().contains(filterRequest.getFieldName()))
                 .collect(Collectors.toList());
     }
+  
+  /**
+	 * Method to validate the emailId
+	 * 
+	 * @param emailId
+	 * @return
+	 */
+	public static boolean validateEmailId(String emailId) {
+
+		if (StringUtils.isBlank(emailId))
+			return false;
+
+		String regexPattern = "^(.+)@(\\S+)$";
+
+		return Pattern.compile(regexPattern).matcher(emailId).matches();
+
+	}
+
+	/**
+	 * Method to validate the emailId
+	 * 
+	 * @param emailId
+	 * @return
+	 */
+	public static boolean validateMobileNumber(String mobileNumber) {
+
+		if (StringUtils.isBlank(mobileNumber))
+			return false;
+
+		String regexPattern = "(0/91)?[7-9][0-9]{9}";
+
+		return Pattern.compile(regexPattern).matcher(mobileNumber).matches();
+
+	}
+
+	/**
+	 * Method to validate if input data has correct either email or mobile number
+	 * format
+	 * 
+	 * @param phEmail
+	 * @return
+	 */
+	public static boolean validateEmailOrMobile(String phEmail) {
+		return (validateEmailId(phEmail) || validateMobileNumber(phEmail));
+	}
+
 }
