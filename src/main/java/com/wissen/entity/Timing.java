@@ -7,7 +7,6 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Entity for timing.
@@ -53,5 +52,8 @@ public class Timing {
     @NotBlank(message = "Visitor type can not be null.")
     @Column(nullable = false, length = 50)
     private String visitorType;
+
+    @Column(nullable = true, length = 500)
+    private String assetList;
 
 }

@@ -1,7 +1,5 @@
 package com.wissen.dto;
 
-import com.wissen.constants.enums.ProofType;
-import com.wissen.constants.enums.VisitorType;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -52,4 +50,6 @@ public class VisitorDto {
 
     @NotBlank(message = "Visitor type can not be null.")
     private String visitorType;
+
+    private String assetList;
 }

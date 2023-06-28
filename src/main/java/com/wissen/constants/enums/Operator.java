@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Used for dynamic search filter criteria for fetching the details
@@ -24,10 +25,14 @@ public enum Operator {
     IN;
 
     public static boolean isValueIn(List<String> requiredValues, String value) {
+        if(Objects.isNull(requiredValues))
+            return false;
         return requiredValues.contains(value);
     }
 
     public static boolean isValueIn(List<LocalDateTime> requiredValues, LocalDateTime value) {
+        if(Objects.isNull(requiredValues))
+            return false;
         return requiredValues.contains(value);
     }
 
@@ -36,6 +41,10 @@ public enum Operator {
     }
 
     public static boolean isValueEqual(LocalDateTime requiredValue, LocalDateTime value) {
+        if(Objects.isNull(requiredValue) && Objects.isNull(value))
+            return true;
+        else if(Objects.isNull(requiredValue) || Objects.isNull(value))
+            return false;
         return requiredValue.equals(value);
     }
 
@@ -44,22 +53,42 @@ public enum Operator {
     }
 
     public static boolean isValueNotEqual(LocalDateTime requiredValue, LocalDateTime value) {
+        if(Objects.isNull(requiredValue) && Objects.isNull(value))
+            return true;
+        else if(Objects.isNull(requiredValue) || Objects.isNull(value))
+            return false;
         return !requiredValue.equals(value);
     }
 
     public static boolean isGreaterThan(LocalDateTime requiredValue, LocalDateTime value) {
+        if(Objects.isNull(requiredValue) && Objects.isNull(value))
+            return true;
+        else if(Objects.isNull(requiredValue) || Objects.isNull(value))
+            return false;
         return value.isAfter(requiredValue);
     }
 
     public static boolean isGreaterThanOrEqual(LocalDateTime requiredValue, LocalDateTime value) {
+        if(Objects.isNull(requiredValue) && Objects.isNull(value))
+            return true;
+        else if(Objects.isNull(requiredValue) || Objects.isNull(value))
+            return false;
         return value.isAfter(requiredValue) || isValueEqual(requiredValue, value);
     }
 
     public static boolean isLesserThan(LocalDateTime requiredValue, LocalDateTime value) {
+        if(Objects.isNull(requiredValue) && Objects.isNull(value))
+            return true;
+        else if(Objects.isNull(requiredValue))
+            return false;
         return value.isBefore(requiredValue);
     }
 
     public static boolean isLesserOrEqual(LocalDateTime requiredValue, LocalDateTime value) {
+        if(Objects.isNull(requiredValue) && Objects.isNull(value))
+            return true;
+        else if(Objects.isNull(requiredValue))
+            return false;
         return value.isBefore(requiredValue) || isValueEqual(requiredValue, value);
     }
 
