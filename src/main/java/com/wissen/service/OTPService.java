@@ -16,15 +16,14 @@ public interface OTPService {
 	 * @param phEmail
 	 * @return : validation or OTP generation success message
 	 */
-	public String sendOTP(String phEmail);
+	String sendOTP(String phEmail);
 
 	/**
 	 * Method to verify the OTP for login.
 	 * 
-	 * @param emailId
-	 * @param otp
+	 * @param data
 	 * @return : Success or Failure Message
 	 */
-	public String verifyOTP(OtpDTO data);
+	String verifyOTP(OtpDTO data);
 
 }

@@ -1,12 +1,9 @@
 package com.wissen.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
+import com.wissen.exceptions.VisitorManagementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +16,8 @@ import com.wissen.repository.OTPRepository;
 import com.wissen.repository.TimingRepository;
 import com.wissen.repository.VisitorRepository;
 import com.wissen.service.OTPService;
+
+import javax.transaction.Transactional;
 
 /**
  * 
@@ -44,23 +43,24 @@ public class OTPServiceImpl implements OTPService {
 	private EmailService emailService;
 
 	@Override
+	@Transactional
 	public String sendOTP(String phEmail) {
 		String response = "";
 		Visitor visitor = visitorRepository.findByEmailOrPhoneNumber(phEmail);
 		if (visitor == null)
-			return Constants.VISITOR_DOESNOT_EXISTS;
+			throw new VisitorManagementException(Constants.VISITOR_DOESNOT_EXISTS);
 
 		List<Timing> timingList = visitor.getTimings();
 		if (timingList.stream().filter(time -> Objects.isNull(time.getOutTime())).count() > 0)
-			return Constants.VISITOR_IN_FIRM;
+			throw new VisitorManagementException(Constants.VISITOR_IN_FIRM);
 		OTP visitorOTPRecord = otpRepository.findByVisitorAndExpiryAfter(visitor, LocalDateTime.now());
 		if (Objects.isNull(visitorOTPRecord)) {
 			String otp = generateOTP();
 			storeOTP(visitor, otp);
 			emailService.sendEmail(visitor.getFullName(), visitor.getEmail(), otp);
-		} else
+		} else{
 			emailService.sendEmail(visitor.getFullName(), visitor.getEmail(), visitorOTPRecord.getOtp());
-
+		}
 		response = Constants.OTP_GENERATION_MESSAGE;
 		return response;
 	}
@@ -74,18 +74,19 @@ public class OTPServiceImpl implements OTPService {
 	}
 
 	@Override
+	@Transactional
 	public String verifyOTP(OtpDTO data) {
 		String response = "";
 		OTP visitorOTPRecord = otpRepository.findByVisitorEmailOrPhoneNumber(data.getPhEmail());
 		if (visitorOTPRecord != null) {
-			if (data.getOtp().equals(visitorOTPRecord.getOtp())) {
+			if (data.getOtp().equalsIgnoreCase(visitorOTPRecord.getOtp())) {
 				response = Constants.VALID_OTP_MESSAGE;
-				setTimings(data.getPhEmail());
+				setTimings(visitorOTPRecord);
 				otpRepository.delete(visitorOTPRecord);
 			} else
-				response = Constants.INVALID_OTP_MESSAGE;
+				throw new VisitorManagementException(Constants.INVALID_OTP_MESSAGE);
 		} else
-			response = Constants.NEW_OTP_MESSAGE;
+			throw new VisitorManagementException(Constants.NEW_OTP_MESSAGE);
 
 		return response;
 	}
@@ -106,14 +107,14 @@ public class OTPServiceImpl implements OTPService {
 	 * This method sets the timings for the visitor in timing table with inTime as
 	 * current time and outTime as null
 	 * 
-	 * @param phEmail : to fetch the visitor record
+	 * @param otpRecord : to fetch the visitor details based on visitor Id in OTP table
 	 */
-	private void setTimings(String phEmail) {
+	private void setTimings(OTP otpRecord) {
 
-		Visitor visitor = visitorRepository.findByEmailOrPhoneNumber(phEmail);
+		Optional<Visitor> visitorOpt = visitorRepository.findByVisitorId(otpRecord.getVisitor().getVisitorId());
 
-		if (visitor != null) {
-
+		if (visitorOpt.isPresent()) {
+			Visitor visitor = visitorOpt.get();
 			// Sort the timings list based on the outTime in descending order
 			Collections.sort(visitor.getTimings(), Comparator.comparing(Timing::getOutTime).reversed());
 

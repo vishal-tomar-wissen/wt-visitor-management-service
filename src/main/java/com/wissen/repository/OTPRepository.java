@@ -1,14 +1,13 @@
 package com.wissen.repository;
 
-import java.time.LocalDateTime;
-
+import com.wissen.entity.OTP;
+import com.wissen.entity.Visitor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.wissen.entity.OTP;
-import com.wissen.entity.Visitor;
+import java.time.LocalDateTime;
 
 /**
  * Repository class for visitor_otp table.
@@ -25,4 +24,6 @@ public interface OTPRepository extends JpaRepository<OTP, Integer> {
 
 	@Query("SELECT v FROM OTP v WHERE v.visitor.email = :identifier OR v.visitor.phoneNumber = :identifier")
 	OTP findByVisitorEmailOrPhoneNumber(@Param("identifier") String identifier);
+
+	Integer deleteByExpiryLessThan(LocalDateTime now);
 }

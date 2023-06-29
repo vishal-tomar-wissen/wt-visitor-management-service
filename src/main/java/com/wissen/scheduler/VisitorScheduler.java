@@ -1,14 +1,11 @@
 package com.wissen.scheduler;
 
 import com.wissen.entity.Timing;
-import com.wissen.entity.Visitor;
 import com.wissen.service.TimingService;
-import com.wissen.service.VisitorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.CollectionUtils;
 
@@ -18,7 +15,6 @@ import java.util.List;
 
 @Slf4j
 @Configuration
-@EnableScheduling
 public class VisitorScheduler {
 
     @Autowired
@@ -34,7 +30,7 @@ public class VisitorScheduler {
         log.info("cron expression ran at {}", new Date());
         List<Timing> outDetails = timingService.updateOutTimeWhereNull();
         if(!CollectionUtils.isEmpty(outDetails)){
-            outDetails.stream().forEach(timing -> timing.setOutTime(LocalDateTime.now()));
+            outDetails.forEach(timing -> timing.setOutTime(LocalDateTime.now()));
             List<Timing> updateVisitors = timingService.saveOrUpdateTimings(outDetails);
             log.info("Number of visitor timing details are updated are {} ",updateVisitors.size());
         }
