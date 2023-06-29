@@ -2,6 +2,7 @@ package com.wissen.dto;
 
 import com.wissen.constants.enums.DataType;
 import com.wissen.constants.enums.Operator;
+import lombok.Builder;
 import lombok.Data;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @project wt-visitor-management-service
  */
 @Data
+@Builder
 public class FilterRequest {
 
     @Required

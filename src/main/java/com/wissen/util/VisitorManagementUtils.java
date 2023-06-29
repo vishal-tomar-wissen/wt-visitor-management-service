@@ -9,7 +9,9 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Set;
@@ -158,7 +160,7 @@ public class VisitorManagementUtils {
 	/**
 	 * Method to validate the emailId
 	 * 
-	 * @param emailId
+	 * @param mobileNumber
 	 * @return
 	 */
 	public static boolean validateMobileNumber(String mobileNumber) {
@@ -183,4 +185,12 @@ public class VisitorManagementUtils {
 		return (validateEmailId(phEmail) || validateMobileNumber(phEmail));
 	}
 
+    /**
+     * Method to get 7 days back date.
+     *
+     * @return 7DaysBackDate
+     */
+	public static LocalDateTime getLastWeekDate() {
+	    return LocalDateTime.now().with(LocalTime.MIDNIGHT).minusDays(7);
+    }
 }
