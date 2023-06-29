@@ -31,6 +31,12 @@ public class EmailService {
 	@Value("${email.body}")
 	String emailBody;
 
+	@Value("${host.email.subject}")
+	String hostEmailSubject;
+
+	@Value("${host.email.body}")
+	String hostEmailBody;
+
 	/**
 	 * Method for sending simple e-mail message.
 	 * 
@@ -49,21 +55,42 @@ public class EmailService {
 	/**
 	 * Method creates a template to send an email
 	 * 
-	 * @param name         : Name of the Visitor
-	 * @param emailId      : Email Id of the visitor
-	 * @param otp          : OTP for login
-	 * @param emailSubject : Email Subject
-	 * @param emailBody    : Email Body
+	 * @param name    : Name of the Visitor
+	 * @param emailId : Email Id of the visitor
+	 * @param otp     : OTP for login
 	 */
-	public void sendEmail(String name, String emailId, String otp) {
+	public void sendOTPEmail(String name, String emailId, String otp) {
+		String body = String.format((String) emailBody, name, otp);
+		sendEmail(emailId, emailSubject, body);
+	}
 
+	/**
+	 * Method creates a template to send an email to host
+	 * 
+	 * @param visitorName : Name of the Visitor
+	 * @param hostName    : Name of the host
+	 * @param hostEailId  : Email Id of the host
+	 */
+	public void sendHostEmail(String visitorName, String hostName, String hostEailId) {
+		String body = String.format((String) hostEmailBody, hostName, visitorName);
+		sendEmail(hostEailId, hostEmailSubject, body);
+	}
+
+	/**
+	 * Method creates a template to send an email
+	 * 
+	 * @param recipient : recipient email id
+	 * @param subject   : Email Subject
+	 * @param body      : Email body
+	 */
+	public void sendEmail(String recipient, String subject, String body) {
 		List<String> recipients = new ArrayList<>();
-		recipients.add(emailId);
+		recipients.add(recipient);
 
 		// generate emailDTO object
 		EmailDTO emailDTO = new EmailDTO();
-		emailDTO.setSubject(emailSubject);
-		emailDTO.setBody(String.format((String) emailBody, name, otp));
+		emailDTO.setSubject(subject);
+		emailDTO.setBody(body);
 		emailDTO.setRecipients(recipients);
 
 		// send generated e-mail

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.wissen.constants.Constants;
 import com.wissen.dto.OtpDTO;
+import com.wissen.entity.Employee;
 import com.wissen.entity.OTP;
 import com.wissen.entity.Timing;
 import com.wissen.entity.Visitor;
@@ -57,9 +58,9 @@ public class OTPServiceImpl implements OTPService {
 		if (Objects.isNull(visitorOTPRecord)) {
 			String otp = generateOTP();
 			storeOTP(visitor, otp);
-			emailService.sendEmail(visitor.getFullName(), visitor.getEmail(), otp);
+			emailService.sendOTPEmail(visitor.getFullName(), visitor.getEmail(), otp);
 		} else
-			emailService.sendEmail(visitor.getFullName(), visitor.getEmail(), visitorOTPRecord.getOtp());
+			emailService.sendOTPEmail(visitor.getFullName(), visitor.getEmail(), visitorOTPRecord.getOtp());
 
 		response = Constants.OTP_GENERATION_MESSAGE;
 		return response;
@@ -79,9 +80,15 @@ public class OTPServiceImpl implements OTPService {
 		OTP visitorOTPRecord = otpRepository.findByVisitorEmailOrPhoneNumber(data.getPhEmail());
 		if (visitorOTPRecord != null) {
 			if (data.getOtp().equals(visitorOTPRecord.getOtp())) {
-				response = Constants.VALID_OTP_MESSAGE;
-				setTimings(data.getPhEmail());
-				otpRepository.delete(visitorOTPRecord);
+				Visitor visitor = visitorRepository.findByEmailOrPhoneNumber(data.getPhEmail());
+
+				if (visitor != null) {
+					setTimings(visitor);
+					otpRepository.delete(visitorOTPRecord);
+					response = Constants.VALID_OTP_MESSAGE + ". " + sendEmailToHost(visitor);
+				} else
+					response = Constants.VISITOR_NOT_FOUND_MESSAGE;
+
 			} else
 				response = Constants.INVALID_OTP_MESSAGE;
 		} else
@@ -106,11 +113,9 @@ public class OTPServiceImpl implements OTPService {
 	 * This method sets the timings for the visitor in timing table with inTime as
 	 * current time and outTime as null
 	 * 
-	 * @param phEmail : to fetch the visitor record
+	 * @param visitor : Visitor record
 	 */
-	private void setTimings(String phEmail) {
-
-		Visitor visitor = visitorRepository.findByEmailOrPhoneNumber(phEmail);
+	private void setTimings(Visitor visitor) {
 
 		if (visitor != null) {
 
@@ -126,6 +131,24 @@ public class OTPServiceImpl implements OTPService {
 			timingRepository.save(timing);
 
 		}
+	}
+
+	/**
+	 * This method sort the visitor details based on the out time and get the latest
+	 * entry details to fetch the employee details based on the employee id and
+	 * retrieve the host details to send an intimation email for visitor
+	 * 
+	 * @param visitor : input visitor details
+	 * @return : validation message
+	 */
+	private String sendEmailToHost(Visitor visitor) {
+		Collections.sort(visitor.getTimings(), Comparator.comparing(Timing::getOutTime).reversed());
+		Employee employee = visitor.getTimings().get(0).getEmployee();
+		if (!Objects.isNull(employee)) {
+			emailService.sendHostEmail(visitor.getFullName(), employee.getFirstName(), employee.getEmail());
+			return Constants.HOST_EMAIL_SENT_MESSAGE;
+		} else
+			return Constants.HOST_NOT_FOUND_MESSAGE;
 	}
 
 }

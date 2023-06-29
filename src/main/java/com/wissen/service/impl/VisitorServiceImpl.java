@@ -2,11 +2,13 @@ package com.wissen.service.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.wissen.constants.Constants;
 import com.wissen.decorator.VisitorDecorator;
 import com.wissen.dto.FilterRequest;
 import com.wissen.dto.VisitorDto;
 import com.wissen.enrich.FilterResult;
 import com.wissen.enrich.FilterSpecification;
+import com.wissen.entity.Employee;
 import com.wissen.entity.Timing;
 import com.wissen.entity.Visitor;
 import com.wissen.exceptions.VisitorManagementException;
@@ -39,6 +41,9 @@ public class VisitorServiceImpl implements VisitorService {
 
     @Autowired
     private TimingService timingService;
+    
+    @Autowired
+    EmailService emailService;
 
     /**
      * Filter Specification is used to enrich the input request
@@ -68,6 +73,7 @@ public class VisitorServiceImpl implements VisitorService {
 
         //save/update the details
         Visitor savedVisitor = this.visitorRepository.save(visitor);
+        sendEmailToHost(savedVisitor);
 
         // decorating after saving
         visitorDecorator.decorateAfterSaving(savedVisitor, null);
@@ -117,5 +123,23 @@ public class VisitorServiceImpl implements VisitorService {
 
         return Lists.newArrayList(visitors);
     }
+    
+    /**
+	 * This method fetches the employee details from employee table based on the
+	 * employee id and retrieve the host details to send an intimation email for
+	 * visitor
+	 * 
+	 * @param visitor : input visitor details
+	 * @return : validation message
+	 */
+	private String sendEmailToHost(Visitor visitor) {
+		Employee employee = visitor.getTimings().get(0).getEmployee();
+		if (!Objects.isNull(employee)) {
+			emailService.sendHostEmail(visitor.getFullName(), employee.getFirstName(), employee.getEmail());
+			return Constants.HOST_EMAIL_SENT_MESSAGE;
+		} else
+			return Constants.HOST_NOT_FOUND_MESSAGE;
+	}
+
 
 }
