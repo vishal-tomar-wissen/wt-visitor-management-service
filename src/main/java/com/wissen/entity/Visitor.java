@@ -37,6 +37,13 @@ public class Visitor {
     @Column(nullable = false, length = 15)
     private String phoneNumber;
 
+//    @Basic(fetch=FetchType.EAGER)
+//    @Column(nullable = false, length = 900000)
+    @JsonIgnore
+    @Lob
+    private byte[] visitorImage;
+
+
     private String location;
 
     private String proofType;
@@ -48,10 +55,6 @@ public class Visitor {
      */
     private String tempCardNo;
 
-    @JsonIgnore
-    @Lob
-    @Column(nullable = false, length = 700000)
-    private byte[] visitorImage;
 
     @OneToMany(mappedBy = "visitor", cascade = CascadeType.ALL)
     public List<Timing> timings;
