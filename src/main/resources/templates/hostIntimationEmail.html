@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title th:remove="all">Template for HTML email</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+	<!-- use the font -->
+	<style>
+		body {
+			font-family: 'Roboto', sans-serif;
+			font-size: 48px;
+		}
+	</style>
+</head>
+
+<body>
+	<p>
+		Hello <span th:text="${employeeName}" />,
+	</p>
+	<p>
+		Visitor : <span th:text="${visitorName}" /> has arrived and waiting for you in the lobby. <br />
+		Please do the needful.
+	</p>
+	<p>
+		Regards, <br />
+		<em>Admin Team</em>
+	</p>
+</body>
+
+</html>

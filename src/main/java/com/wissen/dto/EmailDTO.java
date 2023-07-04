@@ -1,6 +1,7 @@
 package com.wissen.dto;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class to contain the data for Email
@@ -17,6 +18,8 @@ public class EmailDTO {
 	private String body;
 	private Boolean isHtml;
 	private String attachmentPath;
+	private Map<String, Object> properties;
+	private String templateName;
 
 	public List<String> getRecipients() {
 		return recipients;
@@ -72,6 +75,22 @@ public class EmailDTO {
 
 	public void setAttachmentPath(String attachmentPath) {
 		this.attachmentPath = attachmentPath;
+	}
+
+	public Map<String, Object> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Map<String, Object> properties) {
+		this.properties = properties;
+	}
+
+	public String getTemplateName() {
+		return templateName;
+	}
+
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
 	}
 
 }
