@@ -3,6 +3,7 @@ package com.wissen.controller;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
+import com.wissen.exceptions.VisitorManagementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,12 +47,12 @@ public class OTPController {
 	@GetMapping("/sendOTP")
 	@ApiOperation(value = "API to send OTP", nickname = "sendOTP")
 	public VisitorManagementResponse validateAndSendOtp(
-			@Valid @NotBlank(message = Constants.BLANK_EMAIL_OR_MOBILE) @RequestParam(required = true) String phEmail) {
+			@Valid @NotBlank(message = Constants.BLANK_EMAIL_OR_MOBILE) @RequestParam String phEmail) {
 		try {
 			log.info("Checks if visitor is valid or not");
 			String response = "";
 			if (!VisitorManagementUtils.validateEmailOrMobile(phEmail))
-				response = Constants.VALID_EMAIL_OR_MOBILE;
+				throw new VisitorManagementException(Constants.VALID_EMAIL_OR_MOBILE);
 			else
 				response = otpService.sendOTP(phEmail);
 			return ResponseUtil.getResponse(response);

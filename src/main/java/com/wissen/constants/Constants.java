@@ -53,4 +53,9 @@ public class Constants {
 	public static final String HOST_EMAIL_SENT_MESSAGE = "Sent an intimation email to the host";
 	public static final String HOST_NOT_FOUND_MESSAGE = "Unable to find the host";
 
+	public static final String VISITOR_NAME = "visitorName";
+	public static final String VISITOR_EMAIL = "visitorEmailId";
+	public static final String OTP = "otp";
+	public static final String EMPLOYEE_NAME = "employeeName";
+
 }
