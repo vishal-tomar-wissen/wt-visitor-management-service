@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.mail.util.ByteArrayDataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -37,6 +38,10 @@ public class EmailService {
 		helper.setTo(emailDTO.getRecipients().stream().collect(Collectors.joining(",")));
 		helper.setSubject(emailDTO.getSubject());
 
+		if (emailDTO.getImageAttachment() != null) {
+			ByteArrayDataSource dataSource = new ByteArrayDataSource(emailDTO.getImageAttachment(), "image/png");
+			helper.addAttachment("visitorImage.png", dataSource);
+		}
 		String html = templateEngine.process(emailDTO.getTemplateName(), context);
 		helper.setText(html, true);
 

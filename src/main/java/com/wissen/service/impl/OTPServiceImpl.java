@@ -131,7 +131,7 @@ public class OTPServiceImpl implements OTPService {
 			emailService.sendEmail(emailDTO);
 		} catch (Exception e) {
 			throw new VisitorManagementException(
-					"Exception Occurred while preparing the temple to send an email for OTP");
+					"Exception Occurred while preparing the template to send an email for OTP");
 		}
 
 	}
@@ -243,11 +243,12 @@ public class OTPServiceImpl implements OTPService {
 			emailDTO.setRecipients(recipients);
 			emailDTO.setSubject(hostEmailSubject);
 			emailDTO.setTemplateName(EmailTemplates.HOST_INTIMATION.getTemplateName());
+			emailDTO.setImageAttachment(visitor.getVisitorImage());
 
 			emailService.sendEmail(emailDTO);
 		} catch (Exception e) {
 			throw new VisitorManagementException(
-					"Exception Occurred while preparing the temple to send an email for Host");
+					"Exception Occurred while preparing the template to send an email for Host");
 		}
 	}
 
