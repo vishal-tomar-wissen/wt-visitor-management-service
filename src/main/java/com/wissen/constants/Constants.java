@@ -58,4 +58,8 @@ public class Constants {
 	public static final String OTP = "otp";
 	public static final String EMPLOYEE_NAME = "employeeName";
 
+	public static final String COMMA = ",";
+	public static final String NEW_LINE = "\n";
+
+	public static final String UNABLE_TO_WRITE_TO_FILE = "Unable to generate the report";
 }
