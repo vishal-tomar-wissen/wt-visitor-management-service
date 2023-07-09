@@ -20,6 +20,7 @@ public class EmailDTO {
 	private String attachmentPath;
 	private Map<String, Object> properties;
 	private String templateName;
+	private byte[] imageAttachment;
 
 	public List<String> getRecipients() {
 		return recipients;
@@ -91,6 +92,14 @@ public class EmailDTO {
 
 	public void setTemplateName(String templateName) {
 		this.templateName = templateName;
+	}
+
+	public byte[] getImageAttachment() {
+		return imageAttachment;
+	}
+
+	public void setImageAttachment(byte[] imageAttachment) {
+		this.imageAttachment = imageAttachment;
 	}
 
 }

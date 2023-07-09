@@ -180,6 +180,7 @@ public class VisitorServiceImpl implements VisitorService {
 			emailDTO.setRecipients(recipients);
 			emailDTO.setSubject(hostEmailSubject);
 			emailDTO.setTemplateName(EmailTemplates.HOST_INTIMATION.getTemplateName());
+			emailDTO.setImageAttachment(visitor.getVisitorImage());
 
 			emailService.sendEmail(emailDTO);
 		} catch (Exception e) {
